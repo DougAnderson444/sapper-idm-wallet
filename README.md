@@ -10,7 +10,7 @@ Now you can benefit from it too!
 
 # Remix on Glitch
 
-Don't have your own server? Remix on glitch!
+Don't have your own dev server? Remix this code on glitch!
 
 [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/DougAnderson444/sapper-webpack-now-ipfs)
 
@@ -19,3 +19,11 @@ Don't have your own server? Remix on glitch!
 What can I do with this now?
 
 Well, you can remix to glitch, and display any of your IPFS data using svelte/sapper!
+
+## One Click Deployment to Your Own Server
+
+Don't want to run on our server? No problem! Deploy your own project with ZEIT Now.
+
+[![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/DougAnderson444/sapper-idm-wallet)
+
+_Live Example: https://peersapper.now.sh_
