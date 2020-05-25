@@ -25,10 +25,17 @@
 
     const options = {
       repo: "ipfs" + modifier, // default is "ipfs", string or ipfs.Repo instance, file path at which to store the IPFS node’s data, String(Math.random() + Date.now())
-      pass: password // https://github.com/ipfs/js-ipfs/issues/1138
-      //init: {				// only runs initially
-      //privateKey: privKey, // (base64 PrivKey) string or full PeerId, A pre-generated private key to use. Can be either a base64 string or a PeerId instance.
-      //}
+      pass: password, // https://github.com/ipfs/js-ipfs/issues/1138
+      config: {
+        Addresses: {
+          Swarm: [
+            // "/dns4/ws-star1.par.dwebops.pub/tcp/443/wss/p2p-websocket-star",
+            //"/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star",
+            "/dns4/super.peerpiper.io/tcp/13577/wss/p2p-webrtc-star",
+            "/dns4/super.peerpiper.io/tcp/4033/wss/ipfs/QmPFeUqE4x17gy6cV3bb9yjfiZvwPAtmwmt4zZqgnfEoz5"
+          ]
+        }
+      }
     };
 
     /*
@@ -43,7 +50,9 @@
     $nodeAgentVersion = agentVersion;
     $nodeProtocolVersion = protocolVersion;
 
-    for await (const { cid } of $ipfsNode.add("Saved some data to IPFS, cool!")) {
+    for await (const { cid } of $ipfsNode.add(
+      "Saved some data to IPFS, cool!"
+    )) {
       $rootHash = cid.toString();
 
       //ipns --> Slow AF, unuseable
@@ -70,7 +79,7 @@
 </style>
 
 <div class="outer">
-  {#if $nodeId}
+  {#if $nodeId && $rootHash}
     <div>
       <h2>Your node is running in the browser.</h2>
       <p>

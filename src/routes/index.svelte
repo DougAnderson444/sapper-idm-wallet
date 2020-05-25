@@ -1,6 +1,18 @@
 <script>
+  // svelte stuff
   import { onMount } from "svelte";
+
+  //svelte stores
+  import { ipfsNode } from "../components/stores.js";
+
   import IpfsComp from "../components/Ipfs.svelte";
+  import Wallet from "../components/wallet/Wallet.svelte";
+
+  let mounted;
+
+  onMount(async () => {
+    mounted = true;
+  });
 </script>
 
 <style>
@@ -55,4 +67,10 @@
     Try editing this file (src/routes/index.svelte) to test live reloading.
   </strong>
 </p>
+{#if mounted}
 <IpfsComp />
+{/if}
+
+{#if $ipfsNode}
+  <Wallet />
+{/if}

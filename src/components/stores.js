@@ -5,3 +5,5 @@ export const nodeId = writable(0);
 export const nodeAgentVersion = writable(0);
 export const nodeProtocolVersion = writable(0);
 export const rootHash = writable(0);
+
+export const wallet = writable(0);
