@@ -22,11 +22,7 @@
 
   //never used?
   const unlockWallet = (lockType, challenge) => {
-    const {
-      wallet: { locker }
-    } = this.state;
-
-    locker.getLock(lockType).unlock(challenge);
+    $wallet.locker.getLock(lockType).unlock(challenge);
   };
 
   const handleLockedChanged = () => {
@@ -42,11 +38,10 @@
   };
 </script>
 
-<!-- -->
 {#if $wallet}
   {#if $wallet.locker.isPristine()}
     <SetupLocker
-      locker={$wallet.locker}
+      wallet={$wallet.locker}
       onComplete={handleSetupLockerComplete} />
   {:else if $wallet.locker.isLocked()}
     <LockScreen locker={$wallet.locker} />
