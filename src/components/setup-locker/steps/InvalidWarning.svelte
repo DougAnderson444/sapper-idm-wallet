@@ -1,0 +1,24 @@
+<script>
+    export let validation
+    if(validation.error) console.error(error);
+</script>
+
+{#if validation.error}
+<div>
+    <span>⛔️ Passphrase is not strong enough ⛔️</span>
+    {#if validation.warning}
+        <div>
+            <h4>Warning ⚠️</h4>
+            <div>{ validation.warning.message }</div>
+        </div>
+    {/if}
+    {#if validation.suggestions.length > 0 }
+        <div>
+            <h4>Suggestions 📖</h4>
+            {#each validation.suggestions as suggestion, i}
+                <li>{i + 1}: {suggestion.message}</li>
+            {/each}
+        </div>
+    {/if}
+</div>
+{/if}

@@ -1,4 +1,5 @@
 <script>
+/*
 import PropTypes from 'prop-types';
 
 class Timer extends Component {
@@ -48,4 +49,7 @@ Timer.propTypes = {
 };
 
 export default Timer;
+
+*/
+
 </script>
