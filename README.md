@@ -1,6 +1,8 @@
 # What?
 
-Refactor js-idm-wallet in Svelte, deployed to vercel now
+Refactor js-idm-wallet in Svelte, deployed to vercel now.
+
+This repo implements the streamlined-idm-wallet-SDK uisng svelte and sapper.
 
 # Why?
 
