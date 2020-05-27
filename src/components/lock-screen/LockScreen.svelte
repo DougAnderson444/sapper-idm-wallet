@@ -1,7 +1,6 @@
 <script>
 
 /*
-import PropTypes from 'prop-types';
 
 const LOCK_TYPE = 'passphrase';
 
@@ -51,10 +50,6 @@ class LockScreen extends Component {
         }
     };
 }
-
-LockScreen.propTypes = {
-    locker: PropTypes.object,
-};
 
 export default LockScreen;
 */

@@ -1,5 +1,4 @@
 <script>
-  import PropTypes from "prop-types";
   import SetupMasterLock from "./steps/SetupMasterLock";
   import SetupIdleTimer from "./steps/SetupIdleTimer";
 

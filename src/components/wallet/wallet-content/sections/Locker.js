@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class Locker extends Component {
     render() {
@@ -51,9 +50,5 @@ class Locker extends Component {
         }
     };
 }
-
-Locker.propTypes = {
-    wallet: PropTypes.object.isRequired,
-};
 
 export default Locker;

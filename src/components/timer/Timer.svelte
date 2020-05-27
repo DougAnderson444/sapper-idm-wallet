@@ -1,6 +1,5 @@
 <script>
 /*
-import PropTypes from 'prop-types';
 
 class Timer extends Component {
     state = {
@@ -42,11 +41,6 @@ class Timer extends Component {
         this.setState({ time: locker.idleTimer.getRemainingTime() });
     };
 }
-
-Timer.propTypes = {
-    locker: PropTypes.object.isRequired,
-    className: PropTypes.string,
-};
 
 export default Timer;
 

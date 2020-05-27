@@ -1,7 +1,6 @@
 <script>
 
 /*
-import PropTypes from 'prop-types';
 import Timer from '../../timer/Timer';
 import { Sessions, Locker, Identities } from './sections';
 import './WalletContent.css';
@@ -33,10 +32,6 @@ class WalletContent extends Component {
         );
     }
 }
-
-WalletContent.propTypes = {
-    wallet: PropTypes.object.isRequired,
-};
 
 export default WalletContent;
 */

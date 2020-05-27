@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 const mockApp = {
     id: '1a2b3c',
@@ -112,9 +111,5 @@ class Sessions extends Component {
         .then(() => console.log(`Session destroyed: ${this.destroySessionId}`));
     };
 }
-
-Sessions.propTypes = {
-    wallet: PropTypes.object.isRequired,
-};
 
 export default Sessions;

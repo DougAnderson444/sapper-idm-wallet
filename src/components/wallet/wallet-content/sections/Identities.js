@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class Identities extends Component {
     render() {
@@ -150,9 +149,5 @@ class Identities extends Component {
         .then(() => console.log('Removed Successfully!'));
     };
 }
-
-Identities.propTypes = {
-    wallet: PropTypes.object.isRequired,
-};
 
 export default Identities;
