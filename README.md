@@ -2,7 +2,7 @@
 
 Refactor js-idm-wallet in Svelte, deployed to vercel now.
 
-This repo implements the streamlined-idm-wallet-SDK uisng svelte and sapper.
+Uses DougAnderson444/streamlined-idm-wallet-sdk/lib with svelte and sapper front end.
 
 # Why?
 
