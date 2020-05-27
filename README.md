@@ -29,7 +29,3 @@ Don't want to run on our server? No problem! Deploy your own project with ZEIT N
 [![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/DougAnderson444/sapper-idm-wallet)
 
 _Live Example: https://peersapper.now.sh_
-
-## Replace lib
-
-If you're going to build this, lib will be overwritten. The ./lib/ folder was added to make npm git dependency work in vercel with the smallest change. Just be aware for builds in the future.
