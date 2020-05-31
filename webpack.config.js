@@ -2,15 +2,35 @@ const webpack = require('webpack');
 const path = require('path');
 const config = require('sapper/config/webpack.js');
 const pkg = require('./package.json');
-const mode = process.env.NODE_ENV;
+const mode = process.env.NODE_ENV || 'development';
 const dev = mode === 'development';
 const getPreprocessor = require('svelte-preprocess');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const postcssPlugins = require('./postcss.config.js');
 
 const alias = { svelte: path.resolve('node_modules', 'svelte') };
 const extensions = ['.mjs', '.js', '.json', '.svelte', '.html'];
 const mainFields = ['svelte', 'module', 'browser', 'main'];
 
-const preprocess = getPreprocessor();
+console.log('mode', mode);
+
+const cssConfig = {
+	test: /\.(sa|sc|c)ss$/,
+	use: [
+	  MiniCssExtractPlugin.loader,
+	  'css-loader',
+	  { loader: 'postcss-loader', options: { extract: true, plugins: postcssPlugins(!dev) } },
+	],
+  };
+
+
+const preprocess = getPreprocessor({
+  transformers: {
+    postcss: {
+      plugins: postcssPlugins()
+    }
+  }
+});
 
 module.exports = {
 	client: {
@@ -27,6 +47,7 @@ module.exports = {
 		output: config.client.output(),
 		module: {
 			rules: [
+				cssConfig,
 				{
 					test: /\.(svelte|html)$/,
 					use: {
@@ -39,6 +60,11 @@ module.exports = {
 						}
 					},
 					exclude: ['/node_modules/']
+				},     
+				{
+				  test: /\.(png|jpg|gif|svg)$/,
+				  loader: 'file-loader',
+				  options: { name: '[name].[ext]?[hash]' }
 				}
 			]
 		},
@@ -46,6 +72,7 @@ module.exports = {
 		plugins: [
 			// pending https://github.com/sveltejs/svelte/issues/2377
 			// dev && new webpack.HotModuleReplacementPlugin(),
+			new MiniCssExtractPlugin('main.css'),
 			new webpack.DefinePlugin({
 				'process.browser': true,
 				'process.env.NODE_ENV': JSON.stringify(mode)
@@ -62,6 +89,7 @@ module.exports = {
 		externals: Object.keys(pkg.dependencies).concat('encoding'),
 		module: {
 			rules: [
+				cssConfig,
 				{
 					test: /\.(svelte|html)$/,
 					use: {

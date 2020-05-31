@@ -9,7 +9,9 @@
   import Wallet from "../components/wallet/Wallet.svelte";
 
   import Spinner from "../components/display/Spinner.svelte";
-  //import { ProgressBar } from "@colorfuldots/svelteit";
+  import MaterialTest from "../components/MaterialTest.svelte";
+  
+  import '../tailwind.css';
 
   let mounted;
 
@@ -45,12 +47,22 @@
 
 <svelte:head>
   <title>Identity Manager App</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto+Mono" />
 </svelte:head>
 
 <h1>Identity Manager</h1>
 <p>
-    A place to manage your digital identity, that doesn't depend on Facebook or Google -- just your electricty and internet connection. 
-    100% Owned and stored by you.
+  A place to manage your digital identity, that doesn't depend on Facebook or
+  Google -- just your electricty and internet connection. 100% Owned and stored
+  by you.
 </p>
 
 {#if mounted}
@@ -61,7 +73,9 @@
   {:else}
     <Spinner />
   {/if}
+  <br />
+  Material UI Test:
+  <MaterialTest name="world" />
 {:else}
   <Spinner />
 {/if}
-<br />
