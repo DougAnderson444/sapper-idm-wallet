@@ -3,13 +3,14 @@
   import { onMount, onDestroy } from "svelte";
 
   //svelte stores
-  import { wallet } from "../../stores.js";
+  import { wallet } from "../stores.js";
 
-  let timer;
+  let timeDisplay;
   let time = 0;
   let idleTimeout;
 
   onMount(async () => {
+      console.log(`Mounted, getting remaining time`)
     getRemainingTime();
   });
 
@@ -17,23 +18,21 @@
     clearTimeout(idleTimeout);
   });
 
-  function getTimeString() {
-    const minutes = Math.trunc(this.state.time / (60 * 1000))
-      .toString()
-      .padStart(2, "0");
-    const seconds = Math.trunc((this.state.time % (60 * 1000)) / 1000)
-      .toString()
-      .padStart(2, "0");
-
-    return `${minutes}:${seconds}`;
-  }
-
   const getRemainingTime = () => {
-    const { locker } = this.props;
 
-    idleTimeout = setTimeout(this.getRemainingTime, 250);
+    idleTimeout = setTimeout(getRemainingTime, 250);
 
-    this.setState({ time: $wallet.locker.idleTimer.getRemainingTime() });
+    time = $wallet.locker.idleTimer.getRemainingTime();
+
+    const minutes = Math.trunc(time / (60 * 1000))
+      .toString()
+      .padStart(2, "0");
+    const seconds = Math.trunc((time % (60 * 1000)) / 1000)
+      .toString()
+      .padStart(2, "0");
+
+    timeDisplay = `${minutes}:${seconds}`;
+
   };
 </script>
 <style>
@@ -50,6 +49,6 @@
   }
 
 </style>
-<div class={timer}>
-  <span>{getTimeString()}</span>
+<div class="timer">
+  <span>{timeDisplay}</span>
 </div>

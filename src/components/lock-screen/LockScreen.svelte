@@ -22,7 +22,7 @@
 
   const handleInputKeyPress = event => {
     if (event.charCode === 13) {
-      this.unlock(LOCK_TYPE, value);
+      unlock(LOCK_TYPE, value);
     }
   };
 </script>
@@ -33,9 +33,9 @@
   <div>
     <h1>Lock Screen</h1>
     <input
-      type="text"
+      type="password"
       bind:value
-      onKeyPress={this.handleInputKeyPress} />
+      on:keypress={handleInputKeyPress} />
     {#if error}
       <p>{`⛔️ ${error.message} ⛔️`}</p>
     {/if}

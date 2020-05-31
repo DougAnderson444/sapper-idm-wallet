@@ -38,7 +38,6 @@
     overflow: hidden;
   }
 
-
   .WalletContent .container .bottom {
     height: 60vh;
     display: flex;
@@ -46,19 +45,19 @@
     background-color: #334a43;
     color: rgb(201, 213, 210);
   }
-
 </style>
 
 <div class="WalletContent">
-  <div class="leftBar" />
-  <div class="container">
-    <div class="top">
-      <Timer />
-    </div>
-    <div class="bottom">
-      <Locker />
-      <Identities  />
-      <Sessions />
+  <div class="leftBar">
+    <div class="container">
+      <div class="top">
+        <Timer />
+      </div>
+      <div class="bottom">
+        <Locker />
+        <Identities />
+        <Sessions />
+      </div>
     </div>
   </div>
 </div>

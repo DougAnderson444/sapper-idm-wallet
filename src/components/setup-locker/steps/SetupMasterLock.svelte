@@ -68,13 +68,15 @@
 {#if !loading && !error}
   <div>
     <h3>To setup your wallet please enter a passphrase as the Master Lock.</h3>
+    <form>
     <input
-      type="text"
+      type="password"
       bind:value
       id={LOCK_TYPE}
       name={LOCK_TYPE}
       on:keydown={handleInputChange}
       on:keypress={handleInputKeyPress} />
     <InvalidWarning {validation} />
+    </form>
   </div>
 {/if}

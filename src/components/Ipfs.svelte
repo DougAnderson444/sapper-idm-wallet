@@ -14,7 +14,7 @@
   // IPFS
   import IPFS from "ipfs";
 
-  let password = "";
+  let password = "01234567890123456789";
   let modifier = "";
   let addedFileContents;
 
