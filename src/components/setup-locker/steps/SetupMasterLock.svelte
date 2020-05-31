@@ -2,11 +2,13 @@
   import InvalidWarning from "./InvalidWarning.svelte";
 
   //props from parent
-  export let locker;
   export let onComplete;
+  
+  //svelte stores
+  import { wallet } from "../../stores.js";
 
   //local state vars
-  let loading, error, inputValue;
+  let loading, error, value;
   let validation = {};
 
   //svelte stores
@@ -15,7 +17,7 @@
   const LOCK_TYPE = "passphrase";
 
   const validateStrength = (lockType, solution) => {
-    locker
+    $wallet.locker
       .getLock(lockType)
       .validate(solution)
       .then(v => {
@@ -34,7 +36,7 @@
   const setLock = (lockType, solution) => {
     loading = true;
 
-    locker
+    $wallet.locker
       .getLock(lockType)
       .enable(solution)
       .then(onComplete)
@@ -44,13 +46,13 @@
       });
   };
 
-  const handleInputChange = () => {
-    validateStrength(LOCK_TYPE, inputValue);
+  const handleInputChange = (event) => {
+    validateStrength(LOCK_TYPE, value);
   };
 
   const handleInputKeyPress = event => {
-    if (event.charCode === 13 && !validation.error && inputValue) {
-      setLock(LOCK_TYPE, inputValue);
+    if (event.charCode === 13 && !validation.error && value) {
+      setLock(LOCK_TYPE, value);
     }
   };
 </script>
@@ -68,11 +70,11 @@
     <h3>To setup your wallet please enter a passphrase as the Master Lock.</h3>
     <input
       type="text"
-      bind:value={inputValue}
+      bind:value
       id={LOCK_TYPE}
       name={LOCK_TYPE}
-      onChange={handleInputChange}
-      onKeyPress={handleInputKeyPress} />
+      on:keydown={handleInputChange}
+      on:keypress={handleInputKeyPress} />
     <InvalidWarning {validation} />
   </div>
 {/if}

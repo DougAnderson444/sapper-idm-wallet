@@ -1,49 +1,55 @@
 <script>
-/*
+  // svelte stuff
+  import { onMount, onDestroy } from "svelte";
 
-class Timer extends Component {
-    state = {
-        time: 0,
-    };
+  //svelte stores
+  import { wallet } from "../../stores.js";
 
-    componentDidMount() {
-        this.getRemainingTime();
-    }
+  let timer;
+  let time = 0;
+  let idleTimeout;
 
-    componentWillUnmount() {
-        clearTimeout(this.idleTimeout);
-    }
+  onMount(async () => {
+    getRemainingTime();
+  });
 
-    render() {
-        const { className } = this.props;
+  onDestroy(() => {
+    clearTimeout(idleTimeout);
+  });
 
-        return (
-            <div className={ className }>
-                <span>{ this.getTimeString() }</span>
-            </div>
-        );
-    }
+  function getTimeString() {
+    const minutes = Math.trunc(this.state.time / (60 * 1000))
+      .toString()
+      .padStart(2, "0");
+    const seconds = Math.trunc((this.state.time % (60 * 1000)) / 1000)
+      .toString()
+      .padStart(2, "0");
 
-    getTimeString() {
-        const minutes = Math.trunc(this.state.time / (60 * 1000)).toString()
-        .padStart(2, '0');
-        const seconds = Math.trunc((this.state.time % (60 * 1000)) / 1000).toString()
-        .padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
 
-        return `${minutes}:${seconds}`;
-    }
+  const getRemainingTime = () => {
+    const { locker } = this.props;
 
-    getRemainingTime = () => {
-        const { locker } = this.props;
+    idleTimeout = setTimeout(this.getRemainingTime, 250);
 
-        this.idleTimeout = setTimeout(this.getRemainingTime, 250);
-
-        this.setState({ time: locker.idleTimer.getRemainingTime() });
-    };
-}
-
-export default Timer;
-
-*/
-
+    this.setState({ time: $wallet.locker.idleTimer.getRemainingTime() });
+  };
 </script>
+<style>
+
+  .timer {
+    font-size: 100px;
+    margin: 20px;
+  }
+
+  .timer::before {
+    content: "Current Session:";
+    display: block;
+    font-size: 30px;
+  }
+
+</style>
+<div class={timer}>
+  <span>{getTimeString()}</span>
+</div>

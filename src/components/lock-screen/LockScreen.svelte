@@ -1,57 +1,43 @@
 <script>
+  //svelte stores
+  import { wallet } from "../stores.js";
 
-/*
+  const LOCK_TYPE = "passphrase";
 
-const LOCK_TYPE = 'passphrase';
+  let loading = false;
+  let error = undefined;
+  let value;
 
-class LockScreen extends Component {
-    state = {
-        loading: false,
-        error: undefined,
-    };
+  const unlock = (lockType, challenge) => {
+    loading = true;
 
-    render() {
-        const { loading, error } = this.state;
+    $wallet.locker
+      .getLock(lockType)
+      .unlock(challenge)
+      .catch(err => {
+        loading: false;
+        error = err;
+      });
+  };
 
-        if (loading) {
-            return <div>...Loading...</div>;
-        }
-
-        return (
-            <div>
-                <h1>Lock Screen</h1>
-                <input
-                    type="text"
-                    id={ LOCK_TYPE }
-                    name={ LOCK_TYPE }
-                    onChange={ this.handleInputChange }
-                    onKeyPress={ this.handleInputKeyPress } />
-                { error && <p>{ `⛔️${error.message} ⛔️` }</p> }
-            </div>
-        );
+  const handleInputKeyPress = event => {
+    if (event.charCode === 13) {
+      this.unlock(LOCK_TYPE, value);
     }
-
-    unlock = (lockType, challenge) => {
-        const { locker } = this.props;
-
-        this.setState({ loading: true });
-
-        locker.getLock(lockType).unlock(challenge)
-        .catch((error) => this.setState({ loading: false, error }));
-    };
-
-    handleInputChange = (event) => {
-        this.inputValue = event.target.value;
-    };
-
-    handleInputKeyPress = (event) => {
-        if (event.charCode === 13) {
-            this.unlock(LOCK_TYPE, this.inputValue);
-        }
-    };
-}
-
-export default LockScreen;
-*/
+  };
 </script>
-LockScreen
+
+{#if loading}
+  <div>...Loading...</div>
+{:else}
+  <div>
+    <h1>Lock Screen</h1>
+    <input
+      type="text"
+      bind:value
+      onKeyPress={this.handleInputKeyPress} />
+    {#if error}
+      <p>{`⛔️ ${error.message} ⛔️`}</p>
+    {/if}
+  </div>
+{/if}

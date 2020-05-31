@@ -3,10 +3,13 @@
   import { onMount } from "svelte";
 
   //svelte stores
-  import { ipfsNode } from "../components/stores.js";
+  import { ipfsNode, elapsed, start } from "../components/stores.js";
 
   import IpfsComp from "../components/Ipfs.svelte";
   import Wallet from "../components/wallet/Wallet.svelte";
+
+  import Spinner from "../components/display/Spinner.svelte";
+  //import { ProgressBar } from "@colorfuldots/svelteit";
 
   let mounted;
 
@@ -17,7 +20,6 @@
 
 <style>
   h1,
-  figure,
   p {
     text-align: center;
     margin: 0 auto;
@@ -28,16 +30,6 @@
     text-transform: uppercase;
     font-weight: 700;
     margin: 0 0 0.5em 0;
-  }
-
-  figure {
-    margin: 0 0 1em 0;
-  }
-
-  img {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 0 1em 0;
   }
 
   p {
@@ -52,25 +44,24 @@
 </style>
 
 <svelte:head>
-  <title>Sapper project template</title>
+  <title>Identity Manager App</title>
 </svelte:head>
 
-<h1>Great success!</h1>
-
-<figure>
-  <img alt="Borat" src="great-success.png" />
-  <figcaption>HIGH FIVE!</figcaption>
-</figure>
-
+<h1>Identity Manager</h1>
 <p>
-  <strong>
-    Try editing this file (src/routes/index.svelte) to test live reloading.
-  </strong>
+    A place to manage your digital identity, that doesn't depend on Facebook or Google -- just your electricty and internet connection. 
+    100% Owned and stored by you.
 </p>
-{#if mounted}
-<IpfsComp />
-{/if}
 
-{#if $ipfsNode}
-  <Wallet />
+{#if mounted}
+  <IpfsComp />
+
+  {#if $ipfsNode}
+    <Wallet />
+  {:else}
+    <Spinner />
+  {/if}
+{:else}
+  <Spinner />
 {/if}
+<br />

@@ -3,7 +3,6 @@
   import SetupIdleTimer from "./steps/SetupIdleTimer";
 
   //export props fromparent to this component
-  export let locker;
   export let onComplete;
 
   let step = 1;
@@ -20,9 +19,9 @@
 <div>
   <h1>Setup Locker</h1>
   {#if step == 1}
-    <SetupMasterLock {locker} onComplete={handleStepComplete} />
+    <SetupMasterLock onComplete={handleStepComplete} />
   {:else if step == 2}
-    <SetupIdleTimer {locker} onComplete={handleStepComplete} />
+    <SetupIdleTimer onComplete={handleStepComplete} />
   {:else}
     <div />
   {/if}

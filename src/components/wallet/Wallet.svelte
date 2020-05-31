@@ -17,7 +17,7 @@
     console.log("Mounted. Create wallet");
     $wallet = await createWallet({ ipfs: $ipfsNode });
     console.log(`Wallet Created`);
-    //$wallet.locker.onLockedChange(handleLockedChanged); //prolly not even needed
+    $wallet.locker.onLockedChange(handleLockedChanged);
   });
 
   //never used?
@@ -41,12 +41,11 @@
 {#if $wallet}
   {#if $wallet.locker.isPristine()}
     <SetupLocker
-      wallet={$wallet.locker}
       onComplete={handleSetupLockerComplete} />
   {:else if $wallet.locker.isLocked()}
-    <LockScreen locker={$wallet.locker} />
+    <LockScreen />
   {:else}
-    <WalletContent wallet={$wallet} />
+    <WalletContent />
   {/if}
 {:else}
   <div>No Wallet</div>
