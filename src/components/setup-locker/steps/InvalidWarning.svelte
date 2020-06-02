@@ -1,16 +1,27 @@
 <script>
+  import Card from "@smui/card";
+
   export let validation;
-  if (validation.error) console.error(error);
+
+  if (validation.error) {
+    console.error(`Validation ERROR!! ${error}`);
+  }
 </script>
 
 <style>
-  div.warn {
+  .contain {
     margin: 1em;
+    width: 550px;
   }
 </style>
 
-{#if validation.error}
-    <div class="warn">
+<div class="contain">
+{#if validation && validation.error}
+  <div class="card-container short">
+    <Card
+      class="high"
+      style="width: 500px; background-color: #fff3cd; border-color: #ffeeba;"
+      padded>
       <span>⛔️ Passphrase is not strong enough ⛔️</span>
       {#if validation.warning}
         <div>
@@ -26,5 +37,7 @@
           {/each}
         </div>
       {/if}
-    </div>
+    </Card>
+  </div>
 {/if}
+</div>

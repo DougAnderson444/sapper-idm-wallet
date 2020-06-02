@@ -3,7 +3,7 @@
   import createWallet from "streamlined-idm-wallet-sdk";
 
   // svelte stuff
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   //svelte stores
   import { wallet, ipfsNode } from "../stores.js";
@@ -26,17 +26,21 @@
   };
 
   const handleLockedChanged = () => {
-    //forceUpdate();
-    console.log("LockedChanged");
     $wallet = $wallet;
   };
 
-  const handleSetupLockerComplete = () => {
-    //this.forceUpdate();
-    console.log("SetupLockerComplete");
+  const handleSetupLockerComplete = async() => {
     $wallet = $wallet;
   };
 </script>
+
+<style>
+  .contain {
+    margin: 1em 0 1em 0;
+  }
+</style>
+
+<div class="contain">
 
 {#if $wallet}
   {#if $wallet.locker.isPristine()}
@@ -48,5 +52,6 @@
     <WalletContent />
   {/if}
 {:else}
-  <div>No Wallet</div>
+  <div>Creating Wallet...</div>
 {/if}
+</div>

@@ -38,14 +38,14 @@
 <style>
 
   .timer {
-    font-size: 100px;
-    margin: 20px;
+    font-size: 50px;
+    margin: 12px;
   }
 
   .timer::before {
     content: "Current Session:";
     display: block;
-    font-size: 30px;
+    font-size: 12px;
   }
 
 </style>

@@ -12,10 +12,10 @@
     width: 50px;
     height: 50px;
     margin: 8px;
-    border: 8px solid #3a9934;
+    border: 8px solid #2ECC71;
     border-radius: 50%;
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #3a9934 transparent transparent transparent;
+    border-color: #2ECC71 transparent transparent transparent;
   }
   .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;

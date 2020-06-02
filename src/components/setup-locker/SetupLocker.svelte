@@ -8,7 +8,7 @@
   let step = 1;
 
   const handleStepComplete = () => {
-    if (step === 2) {
+    if (step === 1) {
       return onComplete();
     }
 
@@ -16,7 +16,13 @@
   };
 </script>
 
-<div>
+<style>
+  .contain {
+    margin: 1em;
+  }
+</style>
+
+<div class="contain">
   <h1>Setup Locker</h1>
   {#if step == 1}
     <SetupMasterLock onComplete={handleStepComplete} />

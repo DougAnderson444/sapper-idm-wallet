@@ -75,18 +75,22 @@
   div.outer {
     outline: 1px solid lightgray;
     padding: 15px;
+    -webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
   }
 </style>
 
 <div class="outer">
   {#if $nodeId && $rootHash}
     <div>
-      <h2>Your node is running in the browser.</h2>
-      <p>
-        <b>
+      <p>Your node is running in the browser.</p>
+
+        <!--        <b>
           View your data in web 3.0'land (kinda like a blockchain, but
           different):
         </b>
+
         <br />
         <a
           target="_blank"
@@ -97,6 +101,7 @@
       </p>
       <p>Browser nodeID: {$nodeId}</p>
       <p>{addedFileContents}</p>
+      -->
     </div>
   {:else}
     <div>

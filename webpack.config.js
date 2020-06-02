@@ -4,35 +4,31 @@ const config = require("sapper/config/webpack.js");
 const pkg = require("./package.json");
 const mode = process.env.NODE_ENV || "development";
 const dev = mode === "development";
-const getPreprocessor = require("svelte-preprocess");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const postcssPlugins = require("./postcss.config.js");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const alias = { svelte: path.resolve("node_modules", "svelte") };
 const extensions = [".mjs", ".js", ".json", ".svelte", ".html"];
 const mainFields = ["svelte", "module", "browser", "main"];
 
-console.log("mode", mode);
+console.log(mode,"mode");
 
 const cssConfig = {
   test: /\.(sa|sc|c)ss$/,
   use: [
+    "style-loader",
     MiniCssExtractPlugin.loader,
     "css-loader",
     {
-      loader: "postcss-loader",
-      options: { extract: true, plugins: postcssPlugins(!dev) },
+      loader: "sass-loader",
+      options: {
+        sassOptions: {
+          includePaths: ["./src/theme", "./node_modules"],
+        },
+      },
     },
   ],
 };
-
-const preprocess = getPreprocessor({
-  transformers: {
-    postcss: {
-      plugins: postcssPlugins(),
-    },
-  },
-});
 
 module.exports = {
   client: {
@@ -56,24 +52,34 @@ module.exports = {
             loader: "svelte-loader",
             options: {
               dev,
-              preprocess,
               hydratable: true,
               hotReload: false, // pending https://github.com/sveltejs/svelte/issues/2377
-            }
-          }
+            },
+          },
         },
         {
           test: /\.(png|jpg|gif|svg)$/,
           loader: "file-loader",
           options: { name: "[name].[ext]?[hash]" },
-        }
-      ]
+        },
+      ],
     },
     mode,
     plugins: [
       // pending https://github.com/sveltejs/svelte/issues/2377
       // dev && new webpack.HotModuleReplacementPlugin(),
-      new MiniCssExtractPlugin("main.css"),
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[name].[id].css",
+      }),
+      new OptimizeCssAssetsPlugin({
+        assetNameRegExp: /\.css$/g,
+        cssProcessor: require("cssnano"),
+        cssProcessorPluginOptions: {
+          preset: ["default", { discardComments: { removeAll: true } }],
+        },
+        canPrint: true,
+      }),
       new webpack.DefinePlugin({
         "process.browser": true,
         "process.env.NODE_ENV": JSON.stringify(mode),
@@ -90,13 +96,12 @@ module.exports = {
     externals: Object.keys(pkg.dependencies).concat("encoding"),
     module: {
       rules: [
-		cssConfig,
-		{
+        cssConfig,
+        {
           test: /\.(svelte|html)$/,
           use: {
             loader: "svelte-loader",
             options: {
-              preprocess,
               css: false,
               generate: "ssr",
               dev,
@@ -106,10 +111,21 @@ module.exports = {
         },
       ],
     },
-	mode: process.env.NODE_ENV,
-	plugins: [
-		new MiniCssExtractPlugin("main.css")
-	  ].filter(Boolean),
+    mode: process.env.NODE_ENV,
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[name].[id].css",
+      }),
+      new OptimizeCssAssetsPlugin({
+        assetNameRegExp: /\.css$/g,
+        cssProcessor: require("cssnano"),
+        cssProcessorPluginOptions: {
+          preset: ["default", { discardComments: { removeAll: true } }],
+        },
+        canPrint: true,
+      }),
+    ].filter(Boolean),
     performance: {
       hints: false, // it doesn't matter if server.js is large
     },

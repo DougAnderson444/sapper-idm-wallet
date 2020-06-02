@@ -2,11 +2,20 @@
   //svelte stores
   import { wallet } from "../stores.js";
 
+  // Svelte Material UI
+  import Textfield from "@smui/textfield";
+  import HelperText from "@smui/textfield/helper-text";
+  import { Label, Icon } from "@smui/common";
+
+  import Warning from "../display/Warning.svelte";
+  
+  import Spinner from "../display/Spinner.svelte";
+
   const LOCK_TYPE = "passphrase";
 
   let loading = false;
   let error = undefined;
-  let value;
+  let value = "";
 
   const unlock = (lockType, challenge) => {
     loading = true;
@@ -15,7 +24,8 @@
       .getLock(lockType)
       .unlock(challenge)
       .catch(err => {
-        loading: false;
+        loading = false;
+        console.log(`unlock err: ${err}`);
         error = err;
       });
   };
@@ -27,17 +37,34 @@
   };
 </script>
 
-{#if loading}
-  <div>...Loading...</div>
-{:else}
-  <div>
-    <h1>Lock Screen</h1>
-    <input
-      type="password"
-      bind:value
-      on:keypress={handleInputKeyPress} />
-    {#if error}
-      <p>{`⛔️ ${error.message} ⛔️`}</p>
-    {/if}
-  </div>
-{/if}
+<style>
+  .contain {
+    margin: 1em 0 1em 0;
+    width: 550px;
+  }
+</style>
+
+<div class="contain">
+  {#if loading}
+    <Spinner />
+  {:else}
+    <div>
+      <h1>Unlock your account</h1>
+
+      <Textfield
+        bind:value
+        type="password"
+        variant="outlined"
+        label="Passphrase"
+        input$aria-controls="super-helper"
+        input$aria-describedby="super-helper"
+        on:keypress={handleInputKeyPress} />
+      <HelperText id="super-helper">Enter your passphrase to unlock</HelperText>
+
+      <Warning show={error}>
+        <span slot="phrase">⛔️ {error.message} ⛔️</span>
+      </Warning>
+
+    </div>
+  {/if}
+</div>

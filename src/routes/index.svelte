@@ -9,15 +9,13 @@
   import Wallet from "../components/wallet/Wallet.svelte";
 
   import Spinner from "../components/display/Spinner.svelte";
-  import MaterialTest from "../components/MaterialTest.svelte";
-  
-  import '../tailwind.css';
 
   let mounted;
 
-  onMount(async () => {
+  onMount(() => {
     mounted = true;
   });
+  
 </script>
 
 <style>
@@ -29,7 +27,6 @@
 
   h1 {
     font-size: 2.8em;
-    text-transform: uppercase;
     font-weight: 700;
     margin: 0 0 0.5em 0;
   }
@@ -74,8 +71,6 @@
     <Spinner />
   {/if}
   <br />
-  Material UI Test:
-  <MaterialTest name="world" />
 {:else}
   <Spinner />
 {/if}
