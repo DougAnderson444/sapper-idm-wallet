@@ -30,6 +30,7 @@
   };
 
   const handleSetupLockerComplete = async() => {
+    $wallet.locker.idleTimer.restart();
     $wallet = $wallet;
   };
 </script>

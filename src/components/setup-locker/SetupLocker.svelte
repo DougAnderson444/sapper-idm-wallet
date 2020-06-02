@@ -8,7 +8,7 @@
   let step = 1;
 
   const handleStepComplete = () => {
-    if (step === 1) {
+    if (step === 2) {
       return onComplete();
     }
 

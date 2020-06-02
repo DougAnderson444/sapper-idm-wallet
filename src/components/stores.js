@@ -8,6 +8,8 @@ export const rootHash = writable(0);
 
 export const wallet = writable(0);
 
+$: (wallet && wallet.locker && wallet.locker.idleTimer) ? wallet.locker.idleTimer.restart() : null;
+
 // start function is called when the store gets its first subscriber;
 export const time = readable(new Date(), function start(set) {
   const interval = setInterval(() => {
