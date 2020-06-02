@@ -3,6 +3,7 @@
   import { wallet } from "../../stores.js";
   import Slider from "@smui/slider";
   import FormField from "@smui/form-field";
+  import Button, { Label } from "@smui/button";
 
   export let loading;
   export let onComplete;
@@ -30,6 +31,10 @@
       setMaxTime(Math.abs(value * TIME_BASE));
     }
   };
+
+  const handleButtonClick = () => {
+      setMaxTime(Math.abs(value * TIME_BASE));
+  };
 </script>
 
 {#if loading}
@@ -51,8 +56,11 @@
       <span
         slot="label"
         style="padding-right: 12px; width: max-content; display: block;">
-        Session Expires in: 
+        Session Expires in:
       </span>
     </FormField>
   </div>
+  <Button variant="raised" on:click={handleButtonClick}>
+    <Label>Next</Label>
+  </Button>
 {/if}
