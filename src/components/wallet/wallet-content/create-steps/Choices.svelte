@@ -4,19 +4,20 @@
   import List, { Item, Graphic, Text } from "@smui/list";
   import Radio from "@smui/radio";
 
-  export let open;
+  export let openChoices;
   let clicked;
   let selection = "Identity";
+  let openSetupID;
 
   $: {
-    if (clicked === "Ok") {
-      console.log("selected", selection);
-      console.log("clicked", clicked);
+    if (clicked === "Ok" && selection === "Identity") {
+      // show identity setup Component
+      openSetupID = true;
     }
   }
 </script>
 
-<Dialog bind:open bind:clicked>
+<Dialog bind:open={openChoices} bind:clicked>
   <span slot="title">Create Item</span>
 
   <div slot="contents">
@@ -33,6 +34,29 @@
           <Radio bind:group={selection} value="App" />
         </Graphic>
         <Text>Connect App</Text>
+      </Item>
+    </List>
+
+  </div>
+</Dialog>
+
+<Dialog bind:open={openSetupID} bind:clicked>
+  <span slot="title">Setup Identity</span>
+
+  <div slot="contents">
+
+    <List radioList>
+      <Item>
+        <Graphic>
+          <Radio bind:group={selection} value="Person" />
+        </Graphic>
+        <Text>Person</Text>
+      </Item>
+      <Item>
+        <Graphic>
+          <Radio bind:group={selection} value="Organization" />
+        </Graphic>
+        <Text>Organization</Text>
       </Item>
     </List>
 

@@ -24,11 +24,11 @@
 
 </style>
 
-<Choices bind:open />
+<Choices bind:openChoices={open} />
 
 <Button on:click={setOpen} variant="outlined">
   <Icon class="material-icons">add_circle</Icon>
-  <Label>Create Identity</Label>
+  <Label>Create</Label>
 </Button>
 
 <Timer />

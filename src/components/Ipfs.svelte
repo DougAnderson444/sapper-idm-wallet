@@ -72,21 +72,21 @@
 </script>
 
 <style>
-  div.outer {
+  .outer {
     outline: 1px solid lightgray;
     padding: 15px;
     -webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
   }
 </style>
 
 <div class="outer">
   {#if $nodeId && $rootHash}
     <div>
-      <p>Your node is running in the browser.</p>
+      <span>Your node is running in the browser.</span>
 
-        <!--        <b>
+      <!--        <b>
           View your data in web 3.0'land (kinda like a blockchain, but
           different):
         </b>
