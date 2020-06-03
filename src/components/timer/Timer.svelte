@@ -38,7 +38,7 @@
 <style>
 
   .timer {
-    font-size: 50px;
+    font-size: 10px;
     margin: 12px;
   }
 

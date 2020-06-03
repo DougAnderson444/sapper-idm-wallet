@@ -3,8 +3,9 @@
   import Dialog from "../../../display/Dialog.svelte";
   import List, { Item, Graphic, Text } from "@smui/list";
   import Radio from "@smui/radio";
-  import Textfield, { Input, Textarea } from "@smui/textfield";
-  import HelperText from "@smui/textfield/helper-text/index";
+  import { onMount, setContext } from "svelte";
+
+  import { selected } from "../../../stores";
 
   export let openChoices;
   let clicked;
@@ -21,16 +22,11 @@
   $: {
     if (clicked === "Ok" && selection === "Person") {
       // show Person identity setup Component
-      openPersonSetup = true;
+      $selected = "PersonSetup";
+      console.log(`Set context to ${$selected}`)
     }
   }
 
-  $: {
-    if (clicked === "Ok" && personsName !== null) {
-      // show Person identity setup Component
-      console.log(`Person's name is ${personsName}`);
-    }
-  }
 </script>
 
 <Dialog bind:open={openChoices} bind:clicked>
@@ -78,38 +74,3 @@
 
   </div>
 </Dialog>
-
-<Dialog bind:open={openPersonSetup} bind:clicked>
-  <span slot="title">Personal ID Setup</span>
-  <div slot="contents">
-    <List>
-      <Item>
-
-      </Item>
-    </List>
-  </div>
-</Dialog>
-
-<!-- Can't put Textfield in dialog. 
-
-          <Textfield
-          variant="outlined"
-          bind:value={personsName}
-          label="Person's Name"
-          input$aria-controls="helper-text-outlined-name"
-          input$aria-describedby="helper-text-outlined-name" />
-        <HelperText id="helper-text-outlined-name">
-          First Name Last Name works well
-        </HelperText>
-
-      <Item>
-        <Textfield
-          variant="outlined"
-          bind:value={deviceName}
-          label="Device Nickname"
-          input$aria-controls="helper-text-outlined-device"
-          input$aria-describedby="helper-text-outlined-device" />
-        <HelperText id="helper-text-outlined-device">Device Nickname</HelperText>
-      </Item>
-
--->

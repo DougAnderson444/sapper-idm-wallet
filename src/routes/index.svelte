@@ -2,20 +2,19 @@
   // svelte stuff
   import { onMount } from "svelte";
 
-  //svelte stores
-  import { ipfsNode, elapsed, start } from "../components/stores.js";
-
-  import IpfsComp from "../components/Ipfs.svelte";
-  import Wallet from "../components/wallet/Wallet.svelte";
-
+  import { compArr } from "../components/login/sections";
   import Spinner from "../components/display/Spinner.svelte";
 
-  let mounted;
+  //svelte stores
+  import { selected } from "../components/stores.js";
+
+  let mounted, active;
+  $selected = "LogIn"
+  $: active = compArr[$selected];
 
   onMount(() => {
     mounted = true;
   });
-  
 </script>
 
 <style>
@@ -40,6 +39,9 @@
       font-size: 4em;
     }
   }
+  .vert {
+    margin: 1em;
+  }
 </style>
 
 <svelte:head>
@@ -61,16 +63,14 @@
   Google -- just your electricty and internet connection. 100% Owned and stored
   by you.
 </p>
+<p>Try it out!</p>
 
-{#if mounted}
-  <IpfsComp />
-
-  {#if $ipfsNode}
-    <Wallet />
+<div class="vert">
+  {#if mounted}
+    <div class="content">
+      <svelte:component this={active.component} />
+    </div>
   {:else}
     <Spinner />
   {/if}
-  <br />
-{:else}
-  <Spinner />
-{/if}
+</div>

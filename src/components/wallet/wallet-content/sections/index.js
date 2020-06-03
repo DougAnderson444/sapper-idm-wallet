@@ -1,11 +1,12 @@
-import Sessions from './Sessions';
-import Locker from './Locker';
-import Identities from './Identities';
-import WalletMenu from './WalletMenu';
+import Sessions from "./Sessions";
+import Locker from "./Locker";
+import Identities from "./Identities";
+import WalletMenu from "./WalletMenu";
+import PersonSetup from "./PersonSetup";
 
-export {
-    Sessions,
-    Locker,
-    Identities,
-    WalletMenu
+const compArr = {
+  "Identities": { component: Identities },
+  "PersonSetup":{ component: PersonSetup }
 };
+
+export { compArr, Sessions, Locker, Identities, WalletMenu, PersonSetup };

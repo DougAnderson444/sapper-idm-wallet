@@ -1,8 +1,26 @@
 <script>
   //svelte stores
-  import { wallet } from "../../../stores.js";
+  import { wallet, selected } from "../../../stores.js";
+  import Button, { Label, Icon } from "@smui/button";
 
-  let importValue, peekValue, removeIdValue, removeMnemonicValue;
+  let importValue, peekValue, removeIdValue, removeMnemonicValue, ids;
+
+  if ($wallet.identities.isLoaded()) {
+    try {
+      const identities = $wallet.identities.list();
+
+      ids = identities.map(identity => ({
+        addedAt: identity.getAddedAt(),
+        id: identity.getId(),
+        did: identity.getDid(),
+        devices: identity.devices.list(),
+        backup: identity.backup.getData(),
+        profile: identity.profile.getDetails()
+      }));
+    } catch (err) {
+      console.error(`ids error`, err);
+    }
+  }
 
   const handleList = () => {
     try {
@@ -88,29 +106,48 @@
 </script>
 
 <style>
-  .section {
-    flex-grow: 1;
-    max-width: 500px;
-    padding: 30px;
-    box-sizing: border-box;
-  }
-
-  .section .content {
-    border: 1px solid rgb(201, 213, 210);
-  }
-
-  .section .content .option {
-    margin: 20px;
-  }
-
-  .section .content .option > * {
-    margin: 0 10px;
+  .vert {
+    margin: 1em;
   }
 </style>
 
-<div class="section">
   <h4>Identities</h4>
-  <div class="content">
+    {#if ids && ids.length > 0}
+      <ul>
+        {#each $wallet.identities.list() as identity}
+          <li>addedAt: {identity.getAddedAt()}</li>
+          <li>id: {identity.getId()}</li>
+          <li>did: {identity.getDid()}</li>
+          <li>devices: {identity.devices.list()}</li>
+          <li>backup: {identity.backup.getData()}</li>
+          <li>profile: {identity.profile.getDetails()}</li>
+        {/each}
+      </ul>
+    {:else}No Identity. Create one!{/if}
+
+    <div class="vert">
+      <Button
+        on:click={() => {
+          $selected = 'PersonSetup';
+        }}
+        variant="outlined">
+        <Icon class="material-icons">add_circle</Icon>
+        <Label>Create Personal Identity</Label>
+      </Button>
+    </div>
+
+    <div class="vert">
+      <Button
+        on:click={() => {
+          $selected = 'PersonSetup';
+        }}
+        variant="outlined">
+        <Icon class="material-icons">add_circle</Icon>
+        <Label>Create Organizational Identity</Label>
+      </Button>
+    </div>
+
+    <!--
     <div class="option">
       <span>List</span>
       <button on:click={handleList}>List</button>
@@ -135,9 +172,7 @@
       <input
         type="text"
         placeholder="mnemonic"
-        bind:value={removeMnemonicValue}
-        />
+        bind:value={removeMnemonicValue} />
       <button on:click={handleRemoveSubmit}>Remove</button>
     </div>
-  </div>
-</div>
+    -->

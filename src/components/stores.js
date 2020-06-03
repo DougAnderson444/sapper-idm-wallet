@@ -6,7 +6,10 @@ export const nodeAgentVersion = writable(0);
 export const nodeProtocolVersion = writable(0);
 export const rootHash = writable(0);
 
+export const selected = writable(0);
 export const wallet = writable(0);
+export const username = writable("");
+export const password = writable("");
 
 $: (wallet && wallet.locker && wallet.locker.idleTimer) ? wallet.locker.idleTimer.restart() : null;
 
