@@ -118,9 +118,9 @@
           <li>addedAt: {identity.getAddedAt()}</li>
           <li>id: {identity.getId()}</li>
           <li>did: {identity.getDid()}</li>
-          <li>devices: {identity.devices.list()}</li>
-          <li>backup: {identity.backup.getData()}</li>
-          <li>profile: {identity.profile.getDetails()}</li>
+          <li>devices: {JSON.stringify(identity.devices.list())}</li>
+          <li>backup: {JSON.stringify(identity.backup.getData())}</li>
+          <li>profile: {JSON.stringify(identity.profile.getDetails())}</li>
         {/each}
       </ul>
     {:else}No Identity. Create one!{/if}

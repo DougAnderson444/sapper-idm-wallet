@@ -9,10 +9,13 @@
   import {
     ipfsNode,
     appSection,
-    pemEncrypted
+    pemEncrypted,
+    nodeId,
+    wallet,
+    rootHash
   } from "../components/stores.js";
 
-  let mounted, active;
+  let mounted, active, path;
 
   $appSection = "LogIn";
   $: active = appSections[$appSection];
@@ -20,6 +23,16 @@
   onMount(() => {
     mounted = true;
   });
+
+  $: {
+    if ($ipfsNode && $ipfsNode.isOnline()) {
+      (async () => {
+        const { id } = await $ipfsNode.id();
+        //copy to svelte stores
+        $nodeId = id;
+      })();
+    }
+  }
 </script>
 
 <style>
@@ -64,7 +77,7 @@
 
 <h1>Identity Manager</h1>
 <p>
-  A place to manage your digital identity, that doesn't depend on Facebook or
+  Your place to manage your digital identity, that doesn't depend on Facebook or
   Google -- just your electricty and internet connection. 100% Owned and stored
   by you.
 </p>
@@ -73,11 +86,19 @@
 <div class="vert">
   {#if mounted}
     <div class="content">
-      <svelte:component
-        this={active.component} />
+      <svelte:component this={active.component} />
     </div>
     <br />
-    <p>{$pemEncrypted}</p>
+    <p>IPFS Info</p>
+    <p>{$nodeId}</p>
+    <p>
+      <a
+        href="https://explore.ipld.io/#/explore/{$rootHash}"
+        target="_blank"
+        rel="noopener noreferrer">
+        {$rootHash}
+      </a>
+    </p>
   {:else}
     <Spinner />
   {/if}

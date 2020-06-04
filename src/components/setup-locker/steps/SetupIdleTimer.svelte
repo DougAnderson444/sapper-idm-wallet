@@ -9,15 +9,15 @@
   import { appSection } from "../../stores.js";
 
   export let loading;
-  export let onComplete = () => {
-    $wallet.locker.idleTimer.restart();
-    $wallet = $wallet;
-  };
 
   let value = 6;
   let error;
 
   const TIME_BASE = 60 * 1000;
+
+  const handleButtonClick = () => {
+    setMaxTime(Math.abs(value * TIME_BASE));
+  };
 
   const setMaxTime = value => {
     console.log(`Setting Idle timer to ${value} seconds`);
@@ -31,16 +31,12 @@
       });
   };
 
-  const handleInputKeyPress = event => {
-    if (event.charCode === 13) {
-      setMaxTime(Math.abs(value * TIME_BASE));
-    }
+  export let onComplete = () => {
+    $wallet.locker.idleTimer.restart();
+    // $wallet = $wallet;
+     $appSection = "WalletContent"; //next screen
   };
 
-  const handleButtonClick = () => {
-    setMaxTime(Math.abs(value * TIME_BASE));
-    $appSection = "WalletContent"; //next screen
-  };
 </script>
 
 {#if loading}

@@ -8,15 +8,13 @@
   import { PasswordError } from "../errors";
 
   // svelte stuff
-  import { onMount, createEventDispatcher } from "svelte";
-  import { appSection, userReady, username, password } from "../../stores";
+  import { onMount } from "svelte";
+  import { appSection, username, password } from "../../stores";
 
   // Svelte Material UI
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import { Icon } from "@smui/common";
-
-  const dispatch = createEventDispatcher();
 
   //local state vars
   let loading, error;
@@ -74,7 +72,6 @@
       // process creation
       // Create IPFS
       // Take PeerId privKey and encrypt with this password
-      $userReady = true;
       $appSection = "ProcessCreateUser";
     }
   };

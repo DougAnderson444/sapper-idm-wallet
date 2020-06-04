@@ -12,7 +12,6 @@ export const wallet = writable(0);
 export const username = writable("");
 export const password = writable("");
 export const pemEncrypted = writable(0);
-export const userReady = writable(0);
 
 $: if (wallet && wallet.locker && wallet.locker.idleTimer) {
   wallet.locker.idleTimer.restart();
