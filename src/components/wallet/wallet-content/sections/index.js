@@ -3,10 +3,12 @@ import Locker from "./Locker";
 import Identities from "./Identities";
 import WalletMenu from "./WalletMenu";
 import PersonSetup from "./PersonSetup";
+import LockScreen from "../../../lock-screen/LockScreen"
 
-const compArr = {
-  "Identities": { component: Identities },
-  "PersonSetup":{ component: PersonSetup }
+const walletSections = {
+  Identities: { component: Identities },
+  PersonSetup: { component: PersonSetup },
+  LockScreen: { component: LockScreen },
 };
 
-export { compArr, Sessions, Locker, Identities, WalletMenu, PersonSetup };
+export { walletSections, Sessions, Locker, Identities, WalletMenu, PersonSetup };

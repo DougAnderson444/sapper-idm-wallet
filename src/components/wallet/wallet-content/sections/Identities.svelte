@@ -1,6 +1,6 @@
 <script>
   //svelte stores
-  import { wallet, selected } from "../../../stores.js";
+  import { wallet, walletSection } from "../../../stores.js";
   import Button, { Label, Icon } from "@smui/button";
 
   let importValue, peekValue, removeIdValue, removeMnemonicValue, ids;
@@ -128,7 +128,7 @@
     <div class="vert">
       <Button
         on:click={() => {
-          $selected = 'PersonSetup';
+          $walletSection = 'PersonSetup';
         }}
         variant="outlined">
         <Icon class="material-icons">add_circle</Icon>
@@ -139,7 +139,7 @@
     <div class="vert">
       <Button
         on:click={() => {
-          $selected = 'PersonSetup';
+          $walletSection = 'PersonSetup';
         }}
         variant="outlined">
         <Icon class="material-icons">add_circle</Icon>

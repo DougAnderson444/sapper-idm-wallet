@@ -5,9 +5,14 @@
   import FormField from "@smui/form-field";
   import Button, { Label } from "@smui/button";
 
+  // svelte stores
+  import { appSection } from "../../stores.js";
+
   export let loading;
-  export let onComplete;
-  export let placeholder = 6;
+  export let onComplete = () => {
+    $wallet.locker.idleTimer.restart();
+    $wallet = $wallet;
+  };
 
   let value = 6;
   let error;
@@ -18,11 +23,11 @@
     console.log(`Setting Idle timer to ${value} seconds`);
     $wallet.locker.idleTimer
       .setMaxTime(value)
-      .then()
       .then(onComplete)
       .catch(err => {
         loading = false;
         error = err;
+        console.log(`Error setMaxTime: ${err}`);
       });
   };
 
@@ -33,7 +38,8 @@
   };
 
   const handleButtonClick = () => {
-      setMaxTime(Math.abs(value * TIME_BASE));
+    setMaxTime(Math.abs(value * TIME_BASE));
+    $appSection = "WalletContent"; //next screen
   };
 </script>
 
@@ -41,14 +47,8 @@
   <div>...Loading...</div>
 {:else}
   <div>
-    <h3>Setup an expiration lock in minutes [then press Enter]</h3>
-    <input
-      type="number"
-      {placeholder}
-      bind:value
-      on:keypress={handleInputKeyPress}
-      min="0"
-      max="15" />
+    <h3>Expire your session in...</h3>
+    {value} Minutes
   </div>
   <div>
     <FormField align="end" style="display: flex;">

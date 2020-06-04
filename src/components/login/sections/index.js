@@ -1,9 +1,16 @@
 import LogIn from "./LogIn";
 import CreateNewUser from "./CreateNewUser";
+import ProcessCreateUser from "./ProcessCreateUser";
 
-const compArr = {
-  "LogIn": { component: LogIn },
-  "CreateNewUser":{ component: CreateNewUser }
+import SetupIdleTimer from "../../setup-locker/steps/SetupIdleTimer";
+import WalletContent from "../../wallet/wallet-content/WalletContent";
+
+const appSections = {
+  LogIn: { component: LogIn },
+  CreateNewUser: { component: CreateNewUser },
+  ProcessCreateUser: { component: ProcessCreateUser },
+  WalletContent: { component: WalletContent },
+  SetupIdleTimer: { component: SetupIdleTimer },
 };
 
-export { compArr };
+export { appSections };

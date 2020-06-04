@@ -13,7 +13,7 @@
   import { Icon } from "@smui/common";
 
   // svelte stores
-  import { selected, username, password } from "../../stores";
+  import { appSection, username, password } from "../../stores";
 
   //local state vars
   let loading, error;
@@ -52,9 +52,11 @@
   };
 
   const handleInputKeyPress = event => {
+    console.log(`Key pressed \n ${JSON.stringify(event)}`);
     if (event.charCode === 13) {
-      console.log(`Enter pressed, handle submit`)
-      handleSubmit();}
+      console.log(`Enter pressed, handle submit`);
+      handleSubmit();
+    }
   };
 
   const handleSubmit = event => {
@@ -63,7 +65,7 @@
       // TODO
       // if new user, create account
       // redirect to CreateNewUser
-      $selected = "CreateNewUser"
+      $appSection = "CreateNewUser";
     }
   };
 </script>
@@ -85,50 +87,51 @@
 
 {#if !loading && !error}
   <div>
-    <h5>Start with a username and password to protect your stuff.</h5>
-    <div>
-      <Textfield
-        bind:value={$username}
-        type="text"
-        variant="outlined"
-        label="Username"
-        input$aria-controls="super-helper-Username"
-        input$aria-describedby="super-helper-Username" />
-      <HelperText id="super-helper-Username">
-        This will be your @username
-      </HelperText>
-    </div>
+    <form on:submit|preventDefault={handleSubmit}>
+      <h5>Start with a username and password to protect your stuff.</h5>
+      <div>
+        <Textfield
+          bind:value={$username}
+          type="text"
+          variant="outlined"
+          label="Username"
+          input$aria-controls="super-helper-Username"
+          input$aria-describedby="super-helper-Username" />
+        <HelperText id="super-helper-Username">
+          This will be your @username
+        </HelperText>
+      </div>
 
-    <div>
-      <Textfield
-        bind:value={$password}
-        type="password"
-        variant="outlined"
-        label="Passphrase"
-        input$aria-controls="super-helper"
-        input$aria-describedby="super-helper"
-        on:keyup={handlePasswordInput}
-        on:keydown={handleInputKeyPress} />
-      <HelperText id="super-helper">
-        Easy to remember phrase like "I grew up on Main Street back in 87"
-      </HelperText>
+      <div>
+        <Textfield
+          bind:value={$password}
+          type="password"
+          variant="outlined"
+          label="Passphrase"
+          input$aria-controls="super-helper"
+          input$aria-describedby="super-helper"
+          on:keydown={handleInputKeyPress}
+          on:keyup={handlePasswordInput} />
+        <HelperText id="super-helper">
+          Easy to remember phrase like "I grew up on Main Street back in 87"
+        </HelperText>
 
-      <InvalidWarning {validation} />
-    </div>
+        <InvalidWarning {validation} />
+      </div>
 
-    <div>
-      <FormField>
-        <Checkbox bind:checked />
-        <span slot="label">Remember me</span>
-      </FormField>
-      <br clear="all" />
-    </div>
+      <div>
+        <FormField>
+          <Checkbox bind:checked />
+          <span slot="label">Remember me</span>
+        </FormField>
+        <br clear="all" />
+      </div>
 
-    <div>
-      <Button variant="raised" on:click={handleSubmit}>
-        <Label>Next</Label>
-      </Button>
-    </div>
-
+      <div>
+        <Button variant="raised" on:click={handleSubmit}>
+          <Label>Next</Label>
+        </Button>
+      </div>
+    </form>
   </div>
 {/if}

@@ -8,13 +8,20 @@
     nodeAgentVersion,
     nodeProtocolVersion,
     ipfsNode,
-    rootHash
+    rootHash,
+    username,
+    password
   } from "./stores.js";
 
   // IPFS
   import IPFS from "ipfs";
 
-  let password = "01234567890123456789";
+  // pass must be at least 20 char long
+  let pass = $password.padEnd(20, "=") || "01234567890123456789";
+
+  export let pemEncrypted;
+  let repo = "ipfs-" + $username;
+
   let modifier = "";
   let addedFileContents;
 
@@ -25,7 +32,7 @@
 
     const options = {
       repo: "ipfs" + modifier, // default is "ipfs", string or ipfs.Repo instance, file path at which to store the IPFS node’s data, String(Math.random() + Date.now())
-      pass: password, // https://github.com/ipfs/js-ipfs/issues/1138
+      pass: pass, // https://github.com/ipfs/js-ipfs/issues/1138
       config: {
         Addresses: {
           Swarm: [
@@ -44,6 +51,10 @@
     $ipfsNode = await IPFS.create(options);
     console.log(`ipfs node ready \n ${$ipfsNode}`);
     const { id, agentVersion, protocolVersion } = await $ipfsNode.id();
+
+    //export password protected pem
+    // ipfs.key.export(name, password, [options])
+    pemEncrypted = await $ipfsNode.key.export("self", pass);
 
     //copy to svelte stores
     $nodeId = id;
@@ -72,7 +83,7 @@
 </script>
 
 <style>
-  .outer {
+  h2 {
     outline: 1px solid lightgray;
     padding: 15px;
     -webkit-border-radius: 4px;
@@ -81,7 +92,7 @@
   }
 </style>
 
-<div class="outer">
+<div>
   {#if $nodeId && $rootHash}
     <div>
       <span>Your node is running in the browser.</span>

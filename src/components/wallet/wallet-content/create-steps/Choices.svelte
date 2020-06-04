@@ -5,7 +5,7 @@
   import Radio from "@smui/radio";
   import { onMount, setContext } from "svelte";
 
-  import { selected } from "../../../stores";
+  import { appSection } from "../../../stores";
 
   export let openChoices;
   let clicked;
@@ -22,8 +22,8 @@
   $: {
     if (clicked === "Ok" && selection === "Person") {
       // show Person identity setup Component
-      $selected = "PersonSetup";
-      console.log(`Set context to ${$selected}`)
+      $appSection = "PersonSetup";
+      console.log(`Set context to ${$appSection}`)
     }
   }
 

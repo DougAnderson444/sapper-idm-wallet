@@ -1,6 +1,6 @@
 <script>
   import Timer from "../../timer/Timer";
-  import { compArr } from "./sections";
+  import { walletSections } from "./sections";
   import Button, { Label, Icon } from "@smui/button";
   import Choices from "./create-steps/Choices.svelte";
   import Fab from "@smui/fab";
@@ -18,11 +18,11 @@
   import { onMount } from "svelte";
 
   //svelte stores
-  import { wallet, selected } from "../../stores.js";
-  $selected = "Identities"; //init
+  import { wallet, walletSection } from "../../stores.js";
+  $walletSection = "Identities"; //init
 
   let open, menu, active, clicked;
-  $: active = compArr[$selected];
+  $: active = walletSections[$walletSection];
 
   onMount(async () => {
     $wallet.identities.load().then(() => console.log("Identities Loaded"));
@@ -32,21 +32,8 @@
     open = true;
   };
 
-  /*
-      display: flex;
-    align-items: center;
-  .flexy {
-    margin: 0;
-    top: 'auto';
-    right: 20;
-    bottom: 20;
-    right: 'auto';
-    position: 'fixed';
-  }
-  .margins {
-    margin: 0 .4em .4em 0;
-  }
-  */
+  $: if ($wallet.locker.isLocked()) $walletSection = "LockScreen"; 
+
 </script>
 
 <style>
@@ -71,7 +58,7 @@
 
   <Choices bind:openChoices={open} />
 
-  <Fab color="primary" on:click={() => ($selected = 'Identities')}>
+  <Fab color="primary" on:click={() => ($walletSection = 'Identities')}>
     <Icon class="material-icons">home</Icon>
   </Fab>
 
@@ -91,7 +78,7 @@
   <div style="min-width: 100px;">
     <Menu bind:this={menu}>
       <List>
-        <Item on:SMUI:action={() => ($selected = 'PersonSetup')}>
+        <Item on:SMUI:action={() => ($walletSection = 'PersonSetup')}>
           <Text>Identity</Text>
         </Item>
         <Separator />

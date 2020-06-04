@@ -2,15 +2,20 @@
   // svelte stuff
   import { onMount } from "svelte";
 
-  import { compArr } from "../components/login/sections";
+  import { appSections } from "../components/login/sections";
   import Spinner from "../components/display/Spinner.svelte";
 
   //svelte stores
-  import { selected } from "../components/stores.js";
+  import {
+    ipfsNode,
+    appSection,
+    pemEncrypted
+  } from "../components/stores.js";
 
   let mounted, active;
-  $selected = "LogIn"
-  $: active = compArr[$selected];
+
+  $appSection = "LogIn";
+  $: active = appSections[$appSection];
 
   onMount(() => {
     mounted = true;
@@ -68,8 +73,11 @@
 <div class="vert">
   {#if mounted}
     <div class="content">
-      <svelte:component this={active.component} />
+      <svelte:component
+        this={active.component} />
     </div>
+    <br />
+    <p>{$pemEncrypted}</p>
   {:else}
     <Spinner />
   {/if}

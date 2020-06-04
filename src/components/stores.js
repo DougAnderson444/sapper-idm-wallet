@@ -6,12 +6,18 @@ export const nodeAgentVersion = writable(0);
 export const nodeProtocolVersion = writable(0);
 export const rootHash = writable(0);
 
-export const selected = writable(0);
+export const appSection = writable(0);
+export const walletSection = writable(0);
 export const wallet = writable(0);
 export const username = writable("");
 export const password = writable("");
+export const pemEncrypted = writable(0);
+export const userReady = writable(0);
 
-$: (wallet && wallet.locker && wallet.locker.idleTimer) ? wallet.locker.idleTimer.restart() : null;
+$: if (wallet && wallet.locker && wallet.locker.idleTimer) {
+  wallet.locker.idleTimer.restart();
+  console.log(`Stores restarting timer.`);
+}
 
 // start function is called when the store gets its first subscriber;
 export const time = readable(new Date(), function start(set) {

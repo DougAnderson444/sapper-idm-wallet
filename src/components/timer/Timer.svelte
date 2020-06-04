@@ -10,7 +10,6 @@
   let idleTimeout;
 
   onMount(async () => {
-      console.log(`Mounted, getting remaining time`)
     getRemainingTime();
   });
 
@@ -19,10 +18,15 @@
   });
 
   const getRemainingTime = () => {
-
     idleTimeout = setTimeout(getRemainingTime, 250);
 
     time = $wallet.locker.idleTimer.getRemainingTime();
+
+    if (time == 0) {
+      console.log(`Timeout, refresh wallet`);
+      $wallet = $wallet;
+      clearTimeout(idleTimeout);
+    }
 
     const minutes = Math.trunc(time / (60 * 1000))
       .toString()
@@ -32,11 +36,10 @@
       .padStart(2, "0");
 
     timeDisplay = `${minutes}:${seconds}`;
-
   };
 </script>
-<style>
 
+<style>
   .timer {
     font-size: 10px;
     margin: 12px;
@@ -47,8 +50,8 @@
     display: block;
     font-size: 12px;
   }
-
 </style>
+
 <div class="timer">
   <span>{timeDisplay}</span>
 </div>
