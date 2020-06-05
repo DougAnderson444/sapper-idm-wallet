@@ -65,7 +65,11 @@
 
   <div class="section">
     <div class="content">
-      <svelte:component this={active.component} />
+      {#if $wallet.locker.isLocked()}
+        <svelte:component this={walletSections['LockScreen']} />
+      {:else}
+        <svelte:component this={active.component} />
+      {/if}
     </div>
   </div>
   <!--

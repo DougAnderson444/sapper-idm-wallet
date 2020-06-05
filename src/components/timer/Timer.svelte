@@ -29,7 +29,11 @@
       .toString()
       .padStart(2, "0");
 
-    timeDisplay = `${minutes}:${seconds}`;
+    timeDisplay = `
+      ${minutes}:${seconds}
+      ${$wallet.locker.isLocked() ? 'Locked' : 'Unlocked'} as of ${new Date(Date.now())}
+      ${$wallet.locker.isPristine() ? 'Pristine' : 'Not Pristine'}
+      `;
   };
 </script>
 
@@ -48,9 +52,4 @@
 
 <div class="timer">
   <span>{timeDisplay}</span>
-  <br/>
-  <span>
-  {$wallet.locker.isLocked() ? 'Locked' : 'Unlocked'} as of {new Date(Date.now())}
-  </span><br/>
-  <span>{$wallet.locker.isPristine() ? 'Pristine' : 'Not Pristine'}</span>
 </div>

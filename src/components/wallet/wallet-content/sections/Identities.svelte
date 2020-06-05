@@ -122,9 +122,12 @@
       {#each identity.devices.list() as device}
         {device.name} ({device.type}) added {new Date(device.createdAt)}
         <br />
-        Public Key:
+        {device.name}'s Public Key:
+        <!--
         <br />
         {device.keyMaterial.publicKeyPem}
+        {device.keyMaterial.publicExtendedKeyBase58}
+        -->
         <br />
       {/each}
       {#each [...Object.entries(identity.backup.getData()).sort()] as [key, val]}

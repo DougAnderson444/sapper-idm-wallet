@@ -9,7 +9,7 @@
 
   // [ Parking Lot ] Save encrypted pem somewhere online for cloud-like seamless login
   // Otherwise you need to login AND import your keys to that device (not the end of the world though)
-  // Quick n dirty Options: to PouchDB, to IPFS, pointed to from DID Doc 
+  // Quick n dirty Options: to PouchDB, to IPFS, pointed to from DID Doc
   // hash(did) points to orbitdb. I just need to replicate orbitdb on a server
 
   // IPID creates a random key for each DID, so it's not linked to this IPFS PeerId at all...
@@ -33,11 +33,10 @@
     username,
     password,
     rootHash,
-    nodeId
+    nodeId,
+    deviceType,
+    deviceName
   } from "../../stores.js";
-
-  let deviceName = `${$username}'s device`;
-  let deviceType = DEVICE_TYPES[0];
 
   let mounted;
   const LOCK_TYPE = "passphrase";
@@ -102,8 +101,8 @@
           name: $username
         },
         deviceInfo: {
-          type: deviceType,
-          name: deviceName
+          type: $deviceType,
+          name: $deviceName
         }
       })
       .then(identity => {
@@ -150,11 +149,13 @@
       .finally(cb);
   };
 </script>
+
 <style>
-span {
-  margin: 0 1em;
-}
+  span {
+    margin: 0 1em;
+  }
 </style>
+
 Creating account:
 <br />
 
