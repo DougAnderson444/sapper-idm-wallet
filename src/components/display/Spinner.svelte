@@ -1,16 +1,36 @@
+<script>
+export let size = "medium";
+export let theClass = "lds-ring "+size;
+</script>
+
 <style>
-  .lds-ring {
-    display: inline-block;
-    position: relative;
+
+  .small {
+    width: 12px;
+    height: 12px;
+  }
+  .small div {
+    width: 10px;
+    height: 10px;
+  }
+
+  .medium {
     width: 80px;
     height: 80px;
+  }
+  .medium div {
+    width: 50px;
+    height: 50px;
+  }
+
+  .lds-ring {
+    display: inline;
+    position: relative;
   }
   .lds-ring div {
     box-sizing: border-box;
     display: block;
     position: absolute;
-    width: 50px;
-    height: 50px;
     margin: 8px;
     border: 8px solid #2ECC71;
     border-radius: 50%;
@@ -35,12 +55,9 @@
     }
   }
 </style>
-
-<center>
-<div class="lds-ring">
+<div class={theClass}>
   <div />
   <div />
   <div />
   <div />
 </div>
-</center>

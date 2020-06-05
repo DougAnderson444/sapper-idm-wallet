@@ -11,7 +11,7 @@ const alias = { svelte: path.resolve("node_modules", "svelte") };
 const extensions = [".mjs", ".js", ".json", ".svelte", ".html"];
 const mainFields = ["svelte", "module", "browser", "main"];
 
-console.log(mode,"mode");
+console.log(mode, "mode");
 
 const cssConfig = {
   test: /\.(sa|sc|c)ss$/,
@@ -68,6 +68,10 @@ module.exports = {
     plugins: [
       // pending https://github.com/sveltejs/svelte/issues/2377
       // dev && new webpack.HotModuleReplacementPlugin(),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/(?!english)/,
+        contextRegExp: /bip39\/src\/wordlists$/,
+      }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[name].[id].css",
@@ -113,6 +117,10 @@ module.exports = {
     },
     mode: process.env.NODE_ENV,
     plugins: [
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/(?!english)/,
+        contextRegExp: /bip39\/src\/wordlists$/,
+      }),
       new MiniCssExtractPlugin({
         filename: "[name].css",
         chunkFilename: "[name].[id].css",

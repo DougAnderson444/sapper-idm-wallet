@@ -111,43 +111,59 @@
   }
 </style>
 
-  <h4>Identities</h4>
-    {#if ids && ids.length > 0}
-      <ul>
-        {#each $wallet.identities.list() as identity}
-          <li>addedAt: {identity.getAddedAt()}</li>
-          <li>id: {identity.getId()}</li>
-          <li>did: {identity.getDid()}</li>
-          <li>devices: {JSON.stringify(identity.devices.list())}</li>
-          <li>backup: {JSON.stringify(identity.backup.getData())}</li>
-          <li>profile: {JSON.stringify(identity.profile.getDetails())}</li>
-        {/each}
-      </ul>
-    {:else}No Identity. Create one!{/if}
+<h4>Identities</h4>
+{#if ids && ids.length > 0}
+  <ul>
+    {#each $wallet.identities.list() as identity, i}
+      {i + 1}. {identity.getDid()}
+      <br />
+      added on: {new Date(identity.getAddedAt())}
+      <ul>devices:</ul>
+      {#each identity.devices.list() as device}
+        {device.name} ({device.type}) added {new Date(device.createdAt)}
+        <br />
+        Public Key:
+        <br />
+        {device.keyMaterial.publicKeyPem}
+        <br />
+      {/each}
+      {#each [...Object.entries(identity.backup.getData()).sort()] as [key, val]}
+        {#if key == 'mnemonic'}
+          <p>{key}: {val}</p>
+        {/if}
+      {/each}
+      <!--br />
+      {identity.profile.getDetails().then(p => {
+        p.name;
+      })}
+      -->
+    {/each}
+  </ul>
+{:else}No Identity. Create one!{/if}
 
-    <div class="vert">
-      <Button
-        on:click={() => {
-          $walletSection = 'PersonSetup';
-        }}
-        variant="outlined">
-        <Icon class="material-icons">add_circle</Icon>
-        <Label>Create Personal Identity</Label>
-      </Button>
-    </div>
+<div class="vert">
+  <Button
+    on:click={() => {
+      $walletSection = 'PersonSetup';
+    }}
+    variant="outlined">
+    <Icon class="material-icons">add_circle</Icon>
+    <Label>Add Personal Identity</Label>
+  </Button>
+</div>
 
-    <div class="vert">
-      <Button
-        on:click={() => {
-          $walletSection = 'PersonSetup';
-        }}
-        variant="outlined">
-        <Icon class="material-icons">add_circle</Icon>
-        <Label>Create Organizational Identity</Label>
-      </Button>
-    </div>
+<div class="vert">
+  <Button
+    on:click={() => {
+      $walletSection = 'PersonSetup';
+    }}
+    variant="outlined">
+    <Icon class="material-icons">add_circle</Icon>
+    <Label>Add Organizational Identity</Label>
+  </Button>
+</div>
 
-    <!--
+<!--
     <div class="option">
       <span>List</span>
       <button on:click={handleList}>List</button>

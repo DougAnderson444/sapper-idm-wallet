@@ -22,12 +22,6 @@
 
     time = $wallet.locker.idleTimer.getRemainingTime();
 
-    if (time == 0) {
-      console.log(`Timeout, refresh wallet`);
-      $wallet = $wallet;
-      clearTimeout(idleTimeout);
-    }
-
     const minutes = Math.trunc(time / (60 * 1000))
       .toString()
       .padStart(2, "0");
@@ -54,4 +48,9 @@
 
 <div class="timer">
   <span>{timeDisplay}</span>
+  <br/>
+  <span>
+  {$wallet.locker.isLocked() ? 'Locked' : 'Unlocked'} as of {new Date(Date.now())}
+  </span><br/>
+  <span>{$wallet.locker.isPristine() ? 'Pristine' : 'Not Pristine'}</span>
 </div>

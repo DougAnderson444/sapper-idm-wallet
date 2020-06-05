@@ -12,11 +12,8 @@ export const wallet = writable(0);
 export const username = writable("");
 export const password = writable("");
 export const pemEncrypted = writable(0);
-
-$: if (wallet && wallet.locker && wallet.locker.idleTimer) {
-  wallet.locker.idleTimer.restart();
-  console.log(`Stores restarting timer.`);
-}
+export const deviceName = writable(0);
+export const deviceType = writable(0);
 
 // start function is called when the store gets its first subscriber;
 export const time = readable(new Date(), function start(set) {

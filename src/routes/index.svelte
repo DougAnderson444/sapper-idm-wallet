@@ -7,11 +7,7 @@
 
   //svelte stores
   import {
-    ipfsNode,
     appSection,
-    pemEncrypted,
-    nodeId,
-    wallet,
     rootHash
   } from "../components/stores.js";
 
@@ -24,15 +20,6 @@
     mounted = true;
   });
 
-  $: {
-    if ($ipfsNode && $ipfsNode.isOnline()) {
-      (async () => {
-        const { id } = await $ipfsNode.id();
-        //copy to svelte stores
-        $nodeId = id;
-      })();
-    }
-  }
 </script>
 
 <style>
@@ -75,11 +62,11 @@
     href="https://fonts.googleapis.com/css?family=Roboto+Mono" />
 </svelte:head>
 
-<h1>Identity Manager</h1>
+<h1>PeerPiper.io</h1>
 <p>
-  Your place to manage your digital identity, that doesn't depend on Facebook or
-  Google -- just your electricty and internet connection. 100% Owned and stored
-  by you.
+  Your place to manage your own digital footprint, that doesn't depend on
+  Facebook or Google -- just your electricty and internet connection. 100% Owned
+  and stored by you.
 </p>
 <p>Try it out!</p>
 
@@ -89,8 +76,8 @@
       <svelte:component this={active.component} />
     </div>
     <br />
-    <p>IPFS Info</p>
-    <p>{$nodeId}</p>
+    {#if $rootHash}
+    <p>Your DID Doc is published here:</p>
     <p>
       <a
         href="https://explore.ipld.io/#/explore/{$rootHash}"
@@ -99,7 +86,10 @@
         {$rootHash}
       </a>
     </p>
+    {/if}
   {:else}
-    <Spinner />
+    <center>
+      <Spinner />
+    </center>
   {/if}
 </div>

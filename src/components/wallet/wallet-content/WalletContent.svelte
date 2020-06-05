@@ -26,14 +26,15 @@
 
   onMount(async () => {
     $wallet.identities.load().then(() => console.log("Identities Loaded"));
+    $wallet.locker.onLockedChange(handleLockedChanged);
   });
 
-  const setOpen = () => {
-    open = true;
+  const handleLockedChanged = () => {
+    $walletSection = "Identities";
+    $wallet = $wallet;
   };
 
-  $: if ($wallet.locker.isLocked()) $walletSection = "LockScreen"; 
-
+  $: if ($wallet && $wallet.locker.isLocked()) $walletSection = "LockScreen";
 </script>
 
 <style>
@@ -43,7 +44,7 @@
 
   .section {
     flex-grow: 1;
-    max-width: 500px;
+    max-width: 100%;
     padding: 30px;
     box-sizing: border-box;
   }

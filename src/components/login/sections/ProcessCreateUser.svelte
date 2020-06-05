@@ -3,13 +3,17 @@
   // [Done] Create IPFS
   // [Done] Take PeerId privKey and encrypt pem with given password
   // [Done] Use IPFS to create wallet
-  // [ Testing ] Take username and create automatic default did doc
-  // Save encrypted pem to IPFS, post cid in updated DID Doc
+  // [Done] Take username and create automatic default did doc
   // Take username and create dnslink
   // dnslink = cid of DIDDoc
 
-// IPID creates a random key for each DID, so it's not linked to this IPFS PeerId at all... 
-// I can export the key encrypted under the user's password
+  // [ Parking Lot ] Save encrypted pem somewhere online for cloud-like seamless login
+  // Otherwise you need to login AND import your keys to that device (not the end of the world though)
+  // Quick n dirty Options: to PouchDB, to IPFS, pointed to from DID Doc 
+  // hash(did) points to orbitdb. I just need to replicate orbitdb on a server
+
+  // IPID creates a random key for each DID, so it's not linked to this IPFS PeerId at all...
+  // I can export the key encrypted under the user's password
 
   // svelte stuff
   import { onMount } from "svelte";
@@ -36,6 +40,7 @@
   let deviceType = DEVICE_TYPES[0];
 
   let mounted;
+  const LOCK_TYPE = "passphrase";
 
   onMount(async () => {
     mounted = true;
@@ -70,9 +75,23 @@
     (async () => {
       $wallet = await createWallet({ ipfs: $ipfsNode });
       console.log("Wallet created.\nCreate ID and DID Doc.");
+      setLock(LOCK_TYPE, $password);
       handleCreate(() => ($appSection = "SetupIdleTimer"));
       //$appSection = "SetupIdleTimer";
     })();
+
+  const setLock = (lockType, solution) => {
+    //loading = true;
+    //.then(onComplete)
+
+    $wallet.locker
+      .getLock(lockType)
+      .enable(solution)
+      .catch(err => {
+        loading = false;
+        error = err;
+      });
+  };
 
   const handleCreate = cb => {
     $wallet.identities
@@ -131,25 +150,21 @@
       .finally(cb);
   };
 </script>
-
-<center>
-  <Spinner />
-</center>
+<style>
+span {
+  margin: 0 1em;
+}
+</style>
 Creating account:
 <br />
 
 {#if !$ipfsNode}
+  <span>
+    <Spinner size="small" />
+  </span>
   Starting your IPFS node in the browser...
   <br />
-{:else}
-  <Icon class="material-icons" style="margin-right: 4px; color: green;">
-    check_circle
-  </Icon>
-  IPFS node started.
-  <br />
-{/if}
-
-{#if typeof $ipfsNode.isOnline === 'function' && $ipfsNode.isOnline()}
+{:else if typeof $ipfsNode.isOnline === 'function' && $ipfsNode.isOnline()}
   <Icon class="material-icons" style="margin-right: 4px; color: green;">
     check_circle
   </Icon>
@@ -158,6 +173,9 @@ Creating account:
 {/if}
 
 {#if $ipfsNode && !$pemEncrypted}
+  <span>
+    <Spinner size="small" />
+  </span>
   Encrypting password...
   <br />
 {:else if $pemEncrypted}
@@ -169,6 +187,9 @@ Creating account:
 {/if}
 
 {#if $pemEncrypted && !$wallet}
+  <span>
+    <Spinner size="small" />
+  </span>
   Creating wallet...
   <br />
 {:else if $wallet}
@@ -180,6 +201,9 @@ Creating account:
 {/if}
 
 {#if $wallet && !$wallet.identities.isLoaded()}
+  <span>
+    <Spinner size="small" />
+  </span>
   Creating digital identity...
   <br />
 {/if}

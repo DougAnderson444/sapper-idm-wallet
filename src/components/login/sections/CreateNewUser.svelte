@@ -34,10 +34,6 @@
     return result;
   }
 
-  onMount(() => {
-    // confirmValue.focus(); //breaks
-  });
-
   const validateStrength = (lockType, solution) => {
     validate(solution)
       .then(v => {
@@ -126,7 +122,8 @@
         <InvalidWarning {validation} />
       </div>
 
-      <h4>New Account: Type passphrase again to to confirm:</h4>
+      <h3>New Account: Type passphrase again to to confirm:</h3>
+      <br/>
       <Textfield
         bind:value={confirmValue}
         type="password"
