@@ -68,7 +68,7 @@
       // process creation
       // Create IPFS
       // Take PeerId privKey and encrypt with this password
-      $appSection = "ProcessCreateUser";
+      $appSection = "SetupDevice";
     }
   };
 </script>
@@ -123,7 +123,7 @@
       </div>
 
       <h3>New Account: Type passphrase again to to confirm:</h3>
-      <br/>
+      <br />
       <Textfield
         bind:value={confirmValue}
         type="password"

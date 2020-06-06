@@ -1,16 +1,20 @@
-import LogIn from "./LogIn";
-import CreateNewUser from "./CreateNewUser";
-import ProcessCreateUser from "./ProcessCreateUser";
+import LogInOrCreateChoice from "./LogInOrCreateChoice.svelte";
+import LogIn from "./LogIn.svelte";
+import CreateNewUser from "./CreateNewUser.svelte";
+import ProcessCreateUser from "./ProcessCreateUser.svelte";
 
-import SetupIdleTimer from "../../setup-locker/steps/SetupIdleTimer";
-import WalletContent from "../../wallet/wallet-content/WalletContent";
+import SetupDevice from "../../setup-locker/steps/SetupDevice.svelte";
+import SetupIdleTimer from "../../setup-locker/steps/SetupIdleTimer.svelte";
+import WalletContent from "../../wallet/wallet-content/WalletContent.svelte";
 
 const appSections = {
+  LogInOrCreateChoice: { component: LogInOrCreateChoice },
   LogIn: { component: LogIn },
   CreateNewUser: { component: CreateNewUser },
+  SetupDevice: { component: SetupDevice },
   ProcessCreateUser: { component: ProcessCreateUser },
-  WalletContent: { component: WalletContent },
   SetupIdleTimer: { component: SetupIdleTimer },
+  WalletContent: { component: WalletContent },
 };
 
 export { appSections };

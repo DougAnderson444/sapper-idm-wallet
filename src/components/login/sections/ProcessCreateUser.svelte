@@ -4,10 +4,15 @@
   // [Done] Take PeerId privKey and encrypt pem with given password
   // [Done] Use IPFS to create wallet
   // [Done] Take username and create automatic default did doc
-  // Take username and create dnslink
-  // dnslink = cid of DIDDoc
+  // Check to see if this username is allowed to be written (not taken, owned by me)
+  // [Done] Take username and create dnslins, dnslink = cid of DIDDoc
 
-  // [ Parking Lot ] Save encrypted pem somewhere online for cloud-like seamless login
+  // Create user on pouchdb server, if user exists redirect back to create user page with warning/error
+
+  // Test that ipfs.name.reolve(doug.peerpiper.io) works from another node, both go and JS
+
+  // Parking Lot
+  // Save encrypted pem somewhere online for cloud-like seamless login
   // Otherwise you need to login AND import your keys to that device (not the end of the world though)
   // Quick n dirty Options: to PouchDB, to IPFS, pointed to from DID Doc
   // hash(did) points to orbitdb. I just need to replicate orbitdb on a server
@@ -19,7 +24,7 @@
   import { onMount } from "svelte";
   import Spinner from "../../display/Spinner.svelte";
   import createWallet from "streamlined-idm-wallet-sdk";
-  import createIPFS from "../../Ipfs.js";
+  import createIPFS, { resolve } from "../../Ipfs.js";
   import { Icon } from "@smui/common";
 
   import { DEVICE_TYPES } from "streamlined-idm-wallet-sdk/src/identities/identity/utils/constants/devices";
@@ -35,7 +40,8 @@
     rootHash,
     nodeId,
     deviceType,
-    deviceName
+    deviceName,
+    error
   } from "../../stores.js";
 
   let mounted;
@@ -43,8 +49,37 @@
 
   onMount(async () => {
     mounted = true;
-    initIPFS();
+    let userCreated = createNewUser();
+    if (userCreated) {
+      initIPFS();
+    } else {
+      console.log(`User ${$username} already exists`);
+      $appSection = "CreateNewUser";
+    }
   });
+
+  async function createNewUser() {
+    let data = { username: $username, password: $password };
+    const res = await fetch(
+      `/api/createUser?username=${$username}&password=${$password}`,
+      {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include", // to send a request with credentials included
+        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      }
+    );
+    // if exists: {"error":"conflict","reason":"Document update conflict."}
+    if (res.error) {
+      // set error to username already exists and return to createNewUser
+      $error = "Username already exists";
+      // stop this script
+      return false;
+    }
+    return true;
+  }
 
   async function initIPFS() {
     $ipfsNode = await createIPFS($username);
@@ -53,9 +88,7 @@
   // make sure IPFS is online before using it
   $: {
     if (typeof $ipfsNode.isOnline === "function") {
-      console.log("ipfsNode isOnline is a fn");
       if ($ipfsNode.isOnline()) {
-        console.log("ipfsNode isOnline");
         getPem();
       } else {
         console.log("ipfsNode is NOT Online");
@@ -73,10 +106,9 @@
   $: if ($pemEncrypted)
     (async () => {
       $wallet = await createWallet({ ipfs: $ipfsNode });
-      console.log("Wallet created.\nCreate ID and DID Doc.");
+      console.log("Wallet created. Creating ID and DID Doc.");
       setLock(LOCK_TYPE, $password);
-      handleCreate(() => ($appSection = "SetupIdleTimer"));
-      //$appSection = "SetupIdleTimer";
+      handleCreate(() => ($appSection = "WalletContent"));
     })();
 
   const setLock = (lockType, solution) => {
@@ -121,25 +153,32 @@
 
         (async () => {
           const match = identity.getDid().match(/did:(\w+):(\w+).*/);
-          console.log(`Cid is ${match[2]}`);
-          console.log(
-            `Cid does ${match[2] == $nodeId ? "" : "NOT"} match identifier \n ${
-              match[2]
-            } =? ${$nodeId}`
-          );
+          const ipnsHash = match[2];
+          console.log(`ipnsHash is ${ipnsHash}`);
 
           try {
-            for await (const name of $ipfsNode.name.resolve(match[2])) {
-              console.log(name);
-              // /ipfs/QmQrX8hka2BtNHa8N8arAq16TCVx5qHcb46c5yPewRycLm
-              $rootHash = name.replace(/^\/ipfs\//, "");
-              console.log(`$rootHash ${$rootHash}`);
-              console.log(
-                `resolves to https://explore.ipld.io/#/explore/${rootHash}`
-              );
-            }
+            $rootHash = await resolve($ipfsNode, ipnsHash);
+            const dnsConfirmationCode = await fetch(
+              `/api/dns?hash=${ipnsHash}&subdomain=${$username}`
+            );
+            console.log(`DNSuccess Confirmation Code: ${dnsConfirmationCode}`);
           } catch (err) {
-            console.log(`Error getting IPFS path: \n ${err}`);
+            console.log(`Error in process: \n ${err}`);
+          }
+
+          //try it out
+          try {
+            console.log(
+              `Checking that ${$username}.peerpiper.io leads to DID Doc`
+            );
+            const verified = await resolve(
+              $ipfsNode,
+              `${$username}.peerpiper.io`
+            );
+            // assert verified==$rootHash
+            console.log(`assert verified==$rootHash: ${verified == $rootHash}`);
+          } catch (err) {
+            console.log(`Error in process: \n ${err}`);
           }
         })();
       })
@@ -153,6 +192,9 @@
 <style>
   span {
     margin: 0 1em;
+    position: relative;
+    top: -0.4em;
+    left: -0.2em;
   }
 </style>
 

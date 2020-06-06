@@ -30,11 +30,13 @@
   });
 
   const handleLockedChanged = () => {
-    $walletSection = "Identities";
     $wallet = $wallet;
   };
 
-  $: if ($wallet && $wallet.locker.isLocked()) $walletSection = "LockScreen";
+  $: if ($wallet && $wallet.locker.isLocked()) {
+    console.log(`Reactive lock screen triggered`);
+    $walletSection = "LockScreen";
+  }
 </script>
 
 <style>
@@ -57,8 +59,6 @@
 
 <div class="vert">
 
-  <Choices bind:openChoices={open} />
-
   <Fab color="primary" on:click={() => ($walletSection = 'Identities')}>
     <Icon class="material-icons">home</Icon>
   </Fab>
@@ -66,12 +66,15 @@
   <div class="section">
     <div class="content">
       {#if $wallet.locker.isLocked()}
-        <svelte:component this={walletSections['LockScreen']} />
+        <svelte:component this={walletSections['LockScreen'].component} />
       {:else}
         <svelte:component this={active.component} />
       {/if}
     </div>
   </div>
+
+  <Choices bind:openChoices={open} />
+
   <!--
   <div class="flexy">
     <div class="margins">

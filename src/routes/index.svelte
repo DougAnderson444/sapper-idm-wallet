@@ -13,7 +13,7 @@
 
   let mounted, active, path;
 
-  $appSection = "LogIn";
+  $appSection = "LogInOrCreateChoice";
   $: active = appSections[$appSection];
 
   onMount(() => {

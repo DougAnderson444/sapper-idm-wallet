@@ -14,6 +14,7 @@ export const password = writable("");
 export const pemEncrypted = writable(0);
 export const deviceName = writable(0);
 export const deviceType = writable(0);
+export const error = writable(0);
 
 // start function is called when the store gets its first subscriber;
 export const time = readable(new Date(), function start(set) {

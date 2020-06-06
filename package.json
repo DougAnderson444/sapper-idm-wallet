@@ -3,10 +3,11 @@
   "description": "A svelte sapper app built with webpack deployed to Vercel now running IPFS node in the browser.",
   "version": "1.0.0",
   "scripts": {
+    "vercel dev": "vercel dev",
     "start": "sapper dev",
     "dev": "sapper dev --port 3000",
     "build": "sapper export",
-    "export": "sapper export",
+    "export": "sapper export SAPPER_TIMESTAMP=$(date +%s%3N)",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "test": "run-p --race dev cy:run",
@@ -14,9 +15,10 @@
   },
   "dependencies": {
     "compression": "^1.7.1",
-    "ipfs": "^0.43.3",
+    "ipfs": "^0.46.0",
     "polka": "next",
     "prom-client": "^12.0.0",
+    "sapper-environment": "^1.0.1",
     "sirv": "^0.4.0",
     "streamlined-idm-wallet-sdk": "git://github.com/DougAnderson444/streamlined-idm-wallet-sdk.git"
   },
@@ -24,6 +26,7 @@
     "css-loader": "^3.5.3",
     "cssnano": "^4.1.10",
     "mini-css-extract-plugin": "^0.9.0",
+    "node-fetch": "^2.6.0",
     "node-sass": "^4.14.1",
     "normalize-value": "^1.0.1",
     "npm-run-all": "^4.1.5",
@@ -38,7 +41,7 @@
     "svelte": "^3.23.0",
     "svelte-loader": "^2.13.6",
     "svelte-material-ui": "^1.0.0-beta.21",
-    "svelte-preprocess": "^3.7.4",
+    "svelte-preprocess": "^3.8.0",
     "webpack": "^4.42.1",
     "zxcvbn": "^4.4.2"
   },

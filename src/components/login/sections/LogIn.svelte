@@ -1,4 +1,16 @@
 <script>
+// Check for local wallet !isPristine (involves making a wallet then checking it for dirtyness)
+// If pristine, then either username or password was wrong...
+// If username is wrong, they won't be on our list. So check the list first, notify of no user, redirect to create page
+// If password is wrong, the wallet will be pristine, 
+//    If they had an account and it's deleted, retrieve the keys from IPFS
+//    If the password doesnt decrypt a matching privKey, notify wrong passw, redirect w/ paid .eth option 
+//       ...If the peerpiper username is taken, they can always buy the .eth link through us, and link to their ID
+/* 
+1. Check username against our database. Exists ? Proceed create wallet : Redirect to create new page
+2. Creating wallet using password. Pristine wallet ? Wrong password or buy .eth ID if taken : Dirty wallet means its all good
+*/
+
   import InvalidWarning from "../../setup-locker/steps/InvalidWarning.svelte";
   import Warning from "../../display/Warning.svelte";
   import checkPassphraseStrength from "../CheckPassphraseStrength";
@@ -61,9 +73,11 @@
 
   const handleSubmit = event => {
     if (!validation.error && $password) {
-      // if existing user, process login
-      // TODO
-      // if new user, create account
+      /* 
+      1. Check username against our database. Exists ? Proceed create wallet : Redirect to create new page
+      2. Creating wallet using password. Pristine wallet ? Wrong password or buy .eth ID if taken : Dirty wallet means its all good
+      */
+
       // redirect to CreateNewUser
       $appSection = "CreateNewUser";
     }
@@ -88,7 +102,7 @@
 {#if !loading && !error}
   <div>
     <form on:submit|preventDefault={handleSubmit}>
-      <h5>Start with a username and password to protect your stuff.</h5>
+      <h3>Log In below</h3>
       <div>
         <Textfield
           bind:value={$username}
@@ -110,13 +124,12 @@
           label="Passphrase"
           input$aria-controls="super-helper"
           input$aria-describedby="super-helper"
-          on:keydown={handleInputKeyPress}
-          on:keyup={handlePasswordInput} />
+          on:keydown={handleInputKeyPress} />
         <HelperText id="super-helper">
-          Easy to remember phrase like "I grew up on Main Street back in 87"
+          Your pass phrase you used to create your account
         </HelperText>
 
-        <InvalidWarning {validation} />
+        <!--InvalidWarning {validation} /-->
       </div>
 
       <div>
