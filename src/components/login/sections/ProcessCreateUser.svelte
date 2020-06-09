@@ -4,12 +4,15 @@
   // [Done] Take PeerId privKey and encrypt pem with given password
   // [Done] Use IPFS to create wallet
   // [Done] Take username and create automatic default did doc
-  // Check to see if this username is allowed to be written (not taken, owned by me)
+  // [Done] Check to see if this username is allowed to be written (not taken, owned by me)
   // [Done] Take username and create dnslins, dnslink = cid of DIDDoc
 
-  // Create user on pouchdb server, if user exists redirect back to create user page with warning/error
+  // [Done] Create user on pouchdb server,
+  // [Done] if user exists redirect back to create user page with warning/error
 
-  // Test that ipfs.name.reolve(doug.peerpiper.io) works from another node, both go and JS
+  // [Done] Test that ipfs.name.reolve(doug.peerpiper.io) works from another node, both go and JS
+
+  // *** Super & Peers: Pin where the dnslink points + PeerPiper files...
 
   // Parking Lot
   // Save encrypted pem somewhere online for cloud-like seamless login
@@ -49,9 +52,12 @@
 
   onMount(async () => {
     mounted = true;
-    let userCreated = createNewUser();
+    console.log(`1. Process create user request`);
+    let userCreated = await createNewUser();
+    console.log(`5. userCreated: ${userCreated}`);
+
     if (userCreated) {
-      initIPFS();
+      //initIPFS();
     } else {
       console.log(`User ${$username} already exists`);
       $appSection = "CreateNewUser";
@@ -59,25 +65,26 @@
   });
 
   async function createNewUser() {
-    let data = { username: $username, password: $password };
-    const res = await fetch(
-      `/api/createUser?username=${$username}&password=${$password}`,
-      {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include", // to send a request with credentials included
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
-      }
+    let url = encodeURI(
+      `/api/createUser?username=${$username}&password=${$password}`
     );
+
+    const res = await fetch(url);
+
+    if (!res.ok) return false;
+
+    let response = await res.json();
+    console.log(`3. Response ${JSON.stringify(response, null, 2)}`);
+
     // if exists: {"error":"conflict","reason":"Document update conflict."}
-    if (res.error) {
+    if (response.error) {
       // set error to username already exists and return to createNewUser
-      $error = "Username already exists";
+      $error = "That username already exists. Pick another one?";
+      console.log(`4. Username ${$username} already exists`);
       // stop this script
       return false;
     }
+    console.log(`4. Username ${$username} created`);
     return true;
   }
 
@@ -106,7 +113,7 @@
   $: if ($pemEncrypted)
     (async () => {
       $wallet = await createWallet({ ipfs: $ipfsNode });
-      console.log("Wallet created. Creating ID and DID Doc.");
+      console.log("Creating ID and DID Doc.");
       setLock(LOCK_TYPE, $password);
       handleCreate(() => ($appSection = "WalletContent"));
     })();
@@ -138,8 +145,6 @@
         }
       })
       .then(identity => {
-        console.log("Created Identity:");
-        console.log("Identity:", identity);
         console.log("Serialized:", {
           addedAt: identity.getAddedAt(),
           id: identity.getId(),
@@ -148,8 +153,6 @@
           backup: identity.backup.getData(),
           profile: identity.profile.getDetails()
         });
-        console.log(" ");
-        console.log("End of Created Identity.");
 
         (async () => {
           const match = identity.getDid().match(/did:(\w+):(\w+).*/);
@@ -161,22 +164,23 @@
             const dnsConfirmationCode = await fetch(
               `/api/dns?hash=${ipnsHash}&subdomain=${$username}`
             );
-            console.log(`DNSuccess Confirmation Code: ${dnsConfirmationCode}`);
+            console.log(
+              `DNSuccess Confirmation Code: ${JSON.stringify(
+                dnsConfirmationCode,
+                null,
+                2
+              )}`
+            );
           } catch (err) {
             console.log(`Error in process: \n ${err}`);
           }
 
           //try it out
           try {
-            console.log(
-              `Checking that ${$username}.peerpiper.io leads to DID Doc`
-            );
             const verified = await resolve(
               $ipfsNode,
               `${$username}.peerpiper.io`
             );
-            // assert verified==$rootHash
-            console.log(`assert verified==$rootHash: ${verified == $rootHash}`);
           } catch (err) {
             console.log(`Error in process: \n ${err}`);
           }

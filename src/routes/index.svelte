@@ -1,25 +1,6 @@
 <script>
-  // svelte stuff
-  import { onMount } from "svelte";
-
-  import { appSections } from "../components/login/sections";
-  import Spinner from "../components/display/Spinner.svelte";
-
-  //svelte stores
-  import {
-    appSection,
-    rootHash
-  } from "../components/stores.js";
-
-  let mounted, active, path;
-
-  $appSection = "LogInOrCreateChoice";
-  $: active = appSections[$appSection];
-
-  onMount(() => {
-    mounted = true;
-  });
-
+  import Button, { Label } from "@smui/button";
+  import { Icon } from "@smui/common";
 </script>
 
 <style>
@@ -47,10 +28,70 @@
   .vert {
     margin: 1em;
   }
+
+  .hero {
+    margin: 3rem 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    color: #525252;
+    width: 100%;
+  }
+
+  .title {
+    margin: 0;
+    width: 100%;
+    padding-top: 20px;
+    line-height: 1.15;
+    font-size: 48px;
+  }
+  .title,
+  .description {
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+  }
+  .col {
+    max-width: 880px;
+    margin: 80px auto 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .row {
+    max-width: 880px;
+    margin: 80px auto 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .card {
+    padding: 18px 18px 24px;
+    width: 220px;
+    text-align: left;
+    text-decoration: none;
+    color: #32ba46;
+    border: 1px solid #9b9b9b;
+  }
+  .card:hover {
+    border-color: #32ba46;
+  }
+  .card h3 {
+    margin: 0;
+    color: #32ba46;
+    font-size: 18px;
+  }
+  .card p {
+    margin: 0;
+    padding: 12px 0 0;
+    font-size: 13px;
+    color: #333;
+  }
 </style>
 
 <svelte:head>
-  <title>Identity Manager App</title>
+  <title>PeerPiper.io</title>
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -62,34 +103,70 @@
     href="https://fonts.googleapis.com/css?family=Roboto+Mono" />
 </svelte:head>
 
-<h1>PeerPiper.io</h1>
-<p>
-  Your place to manage your own digital footprint, that doesn't depend on
-  Facebook or Google -- just your electricty and internet connection. 100% Owned
-  and stored by you.
-</p>
-<p>Try it out!</p>
+<div class="hero">
+  <center>
+    <img
+      alt="PeerPiper.io logo"
+      width="150"
+      height="150"
+      layout="fixed"
+      class="logo"
+      src="p-150x150.png" />
+  </center>
+  <h1 class="title">PeerPiper.io</h1>
+  <p class="description">
+    Your ultimate personal data sink. Save once, pipe out to your selected peer
+    groups.
+  </p>
 
-<div class="vert">
-  {#if mounted}
-    <div class="content">
-      <svelte:component this={active.component} />
+  <p>
+    Your place to manage your own digital footprint, that doesn't depend on
+    Facebook or Google -- just your electricty and internet connection. 100%
+    Owned and stored by you.
+  </p>
+  <p>Try it out!</p>
+
+  <!-- on:click={async() => (await goto('/app'))}  -->
+  <center>
+    <div class="vert">
+      <Button rel=prefetch href="app" variant="raised">
+        <Icon class="material-icons">launch</Icon>
+        <Label>LAUNCH PEERPIPER</Label>
+        <Icon class="material-icons">launch</Icon>
+      </Button>
     </div>
-    <br />
-    {#if $rootHash}
-    <p>Your DID Doc is published here:</p>
-    <p>
+
+  </center>
+  <div class="row">
+    <div class="col">
       <a
-        href="https://explore.ipld.io/#/explore/{$rootHash}"
+        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
         target="_blank"
-        rel="noopener noreferrer">
-        {$rootHash}
+        class="card">
+        <h3>PeerPiper Portfolio &rarr;</h3>
+        <p>
+          Verify all your resume experience, skills, personality, anything
+          really.
+        </p>
       </a>
-    </p>
-    {/if}
-  {:else}
-    <center>
-      <Spinner />
-    </center>
-  {/if}
+    </div>
+    <div class="col">
+      <a
+        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
+        target="_blank"
+        class="card">
+        <h3>PeerPiper Pad &rarr;</h3>
+        <p>Stream out your address, never miss mail again.</p>
+      </a>
+    </div>
+    <div class="col">
+      <a
+        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
+        target="_blank"
+        class="card">
+        <h3>PeerPiper Pulse &rarr;</h3>
+        <p>Stream out your availability, never miss a meeting again.</p>
+      </a>
+    </div>
+  </div>
 </div>

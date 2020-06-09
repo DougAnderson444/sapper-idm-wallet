@@ -12,21 +12,20 @@
 
   $deviceName = "My Samsung";
   $deviceType = DEVICE_TYPES[0];
-  
+
   export let loading;
   let error;
 
   const handleButtonClick = () => {
     $appSection = "ProcessCreateUser";
   };
-
 </script>
 
 {#if loading}
   <div>...Loading...</div>
 {:else}
 
-<h3>Name this device</h3>
+  <h3>Name this device</h3>
   <div>
     <Select variant="outlined" bind:value={$deviceType} label="Device Type">
       {#each DEVICE_TYPES as device}
@@ -41,11 +40,14 @@
   <div>
     <Textfield
       bind:value={$deviceName}
-      on:focus|once={ ()=>{$deviceName=""} }
+      on:focus|once={() => {
+        $deviceName = '';
+      }}
       variant="outlined"
       label="Device Nickname"
       input$aria-controls="helper-text-outlined-device"
-      input$aria-describedby="helper-text-outlined-device" />
+      input$aria-describedby="helper-text-outlined-device"
+      autocomplete="nickname" />
     <HelperText id="helper-text-outlined-device">Device Nickname</HelperText>
   </div>
 

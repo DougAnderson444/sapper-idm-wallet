@@ -8,35 +8,40 @@ module.exports = async (req, res) => {
     query: req.query,
     cookies: req.cookies
   */
-  const purl = `${process.env.SAPPER_APP_USERDB}/org.couchdb.user:${req.body.username}`; // pouch profile URL
+  console.log(`/api/createUser query is: ${req.query.username} `);
+
+  const purl = `${process.env.SAPPER_APP_USERDB}/org.couchdb.user:${req.query.username}`; // pouch profile URL
   var data = {
-    _id: `org.couchdb.user:${req.body.username}`,
-    name: req.body.username,
+    _id: `org.couchdb.user:${req.query.username}`,
+    name: req.query.username,
     type: "user",
     roles: [],
-    password: req.body.password
+    password: req.query.password,
   };
 
-  //console.log(`data is: \n ` + JSON.stringify(data, null,2));
-
-  const resp = await postData(
-    "PUT",
-    purl,
-    data
-  );
-  res.send(resp) //json(resp) //.status(200).send(date);
+  console.log(`/api/createUser data is: \n ` + JSON.stringify(data, null, 2));
+  const resp = await postData("PUT", purl, data);
+  console.log(`/api/createUser resp is: \n ` + JSON.stringify(resp, null, 2));
+  res.json(resp);
 };
 
 async function postData(method = "", url, data = {}) {
-  const response = await fetch(url, {
-    method: method || "POST", // *GET, POST, PUT, DELETE, etc.
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Basic " + Buffer.from(process.env.SAPPER_APP_AUTH).toString('base64'), // Buffer.from('Hello World!').toString('base64')
-    },
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
-  });
-  return await response.json(); // parses JSON response into native JavaScript objects
+  try {
+    const response = await fetch(url, {
+      method: method || "POST", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Basic " +
+          Buffer.from(process.env.SAPPER_APP_AUTH).toString("base64"), // Buffer.from('Hello World!').toString('base64')
+      },
+      body: JSON.stringify(data), // body data type must match "Content-Type" header
+    });
+    return await response.json(); // parses JSON response into native JavaScript objects
+  } catch (err) {
+    console.log(`/api/createuser fetch Error ${err}`);
+    return null;
+  }
 }
 
 /**

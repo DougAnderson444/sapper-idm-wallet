@@ -9,6 +9,7 @@ module.exports = (req, res) => {
     });
     */
   const date = new Date().toString() + " "+ process.env.SAPPER_APP_TEST;
+  console.log(date)
   res.status(200).send(date);
 };
 
