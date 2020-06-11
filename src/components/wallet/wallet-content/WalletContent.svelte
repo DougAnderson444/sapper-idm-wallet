@@ -1,41 +1,47 @@
 <script>
-  import Timer from "../../timer/Timer";
-  import { walletSections } from "./sections";
-  import Button, { Label, Icon } from "@smui/button";
-  import Choices from "./create-steps/Choices.svelte";
-  import Fab from "@smui/fab";
-  import Menu, { SelectionGroup, SelectionGroupIcon } from "@smui/menu";
+  import Timer from '../../timer/Timer'
+  import { walletSections } from './sections'
+  import Button, { Label, Icon } from '@smui/button'
+  import Choices from './create-steps/Choices.svelte'
+  import Fab from '@smui/fab'
+  import Menu, { SelectionGroup, SelectionGroupIcon } from '@smui/menu'
   import List, {
     Item,
     Separator,
     Text,
     PrimaryText,
     SecondaryText,
-    Graphic
-  } from "@smui/list";
+    Graphic,
+  } from '@smui/list'
 
   // svelte stuff
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte'
 
   //svelte stores
-  import { wallet, walletSection } from "../../stores.js";
-  $walletSection = "Identities"; //init
+  import { wallet, walletSection } from '../../stores.js'
+  $walletSection = 'Identities' //init
 
-  let open, menu, active, clicked;
-  $: active = walletSections[$walletSection];
+  let open, menu, active, clicked
+  $: active = walletSections[$walletSection]
 
   onMount(async () => {
-    $wallet.identities.load().then(() => console.log("Identities Loaded"));
-    $wallet.locker.onLockedChange(handleLockedChanged);
-  });
+    $wallet.identities.load().then(() => {
+      console.log('Identities Loaded')
+      $walletSection = 'Identities'
+      $wallet = $wallet
+    })
+    $wallet.locker.onLockedChange(handleLockedChanged)
+  })
 
   const handleLockedChanged = () => {
-    $wallet = $wallet;
-  };
+    console.log(`Lock changed ${new Date(Date.now())}`)
+    $walletSection = 'Identities'
+    $wallet = $wallet
+  }
 
   $: if ($wallet && $wallet.locker.isLocked()) {
-    console.log(`Reactive lock screen triggered`);
-    $walletSection = "LockScreen";
+    console.log(`Reactive lock screen triggered`)
+    $walletSection = 'LockScreen'
   }
 </script>
 

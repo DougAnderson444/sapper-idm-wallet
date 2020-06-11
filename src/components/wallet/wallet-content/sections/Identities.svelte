@@ -1,108 +1,113 @@
 <script>
   //svelte stores
-  import { wallet, walletSection } from "../../../stores.js";
-  import Button, { Label, Icon } from "@smui/button";
+  import { wallet, walletSection } from '../../../stores.js'
+  import Button, { Label, Icon } from '@smui/button'
 
-  let importValue, peekValue, removeIdValue, removeMnemonicValue, ids;
+  let importValue, peekValue, removeIdValue, removeMnemonicValue, ids, idLoaded
 
-  if ($wallet.identities.isLoaded()) {
+  $: {
+    idLoaded = $wallet.identities.isLoaded()
+    console.log(`Identities loaded in ID.svelte`)
+    }
+
+  $: if (idLoaded) {
     try {
-      const identities = $wallet.identities.list();
+      const identities = $wallet.identities.list()
 
-      ids = identities.map(identity => ({
+      ids = identities.map((identity) => ({
         addedAt: identity.getAddedAt(),
         id: identity.getId(),
         did: identity.getDid(),
         devices: identity.devices.list(),
         backup: identity.backup.getData(),
-        profile: identity.profile.getDetails()
-      }));
+        profile: identity.profile.getDetails(),
+      }))
     } catch (err) {
-      console.error(`ids error`, err);
+      console.error(`ids error`, err)
     }
   }
 
   const handleList = () => {
     try {
-      const identities = $wallet.identities.list();
+      const identities = $wallet.identities.list()
 
-      console.log("List Identities:");
-      identities.forEach(identity => {
-        console.log("Identity:", identity);
-        console.log("Serialized:", {
+      console.log('List Identities:')
+      identities.forEach((identity) => {
+        console.log('Identity:', identity)
+        console.log('Serialized:', {
           addedAt: identity.getAddedAt(),
           id: identity.getId(),
           did: identity.getDid(),
           devices: identity.devices.list(),
           backup: identity.backup.getData(),
-          profile: identity.profile.getDetails()
-        });
-        console.log(" ");
-      });
-      console.log("Final List Identities.");
+          profile: identity.profile.getDetails(),
+        })
+        console.log(' ')
+      })
+      console.log('Final List Identities.')
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
 
   const handleCreate = () => {
     $wallet.identities
-      .create("ipid", {
+      .create('ipid', {
         profileDetails: {
-          "@context": "https://schema.org",
-          "@type": "Person",
-          name: "John Doe"
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'John Doe',
         },
         deviceInfo: {
-          type: "laptop",
-          name: "MacBook Pro"
-        }
+          type: 'laptop',
+          name: 'MacBook Pro',
+        },
       })
-      .then(identity => {
-        console.log("Created Identity:");
-        console.log("Identity:", identity);
-        console.log("Serialized:", {
+      .then((identity) => {
+        console.log('Created Identity:')
+        console.log('Identity:', identity)
+        console.log('Serialized:', {
           addedAt: identity.getAddedAt(),
           id: identity.getId(),
           did: identity.getDid(),
           devices: identity.devices.list(),
           backup: identity.backup.getData(),
-          profile: identity.profile.getDetails()
-        });
-        console.log(" ");
-        console.log("End of Created Identity.");
-      });
-  };
+          profile: identity.profile.getDetails(),
+        })
+        console.log(' ')
+        console.log('End of Created Identity.')
+      })
+  }
 
   const handleImportSubmit = () => {
     $wallet.identities
-      .import("ipid", {
+      .import('ipid', {
         mnemonic: importValue,
         deviceInfo: {
-          type: "laptop",
-          name: "MacBook Pro"
-        }
+          type: 'laptop',
+          name: 'MacBook Pro',
+        },
       })
-      .then(result => console.log("Imported Identity:", result));
-  };
+      .then((result) => console.log('Imported Identity:', result))
+  }
 
   const handlePeekSubmit = () => {
     $wallet.identities
-      .peek("ipid", {
-        mnemonic: peekValue
+      .peek('ipid', {
+        mnemonic: peekValue,
       })
-      .then(result => console.log("Peek Resolved:", result));
-  };
+      .then((result) => console.log('Peek Resolved:', result))
+  }
 
   const handleRemoveSubmit = () => {
-    const { wallet } = props;
+    const { wallet } = props
 
     $wallet.identities
       .remove(removeIdValue, {
-        mnemonic: removeMnemonicValue
+        mnemonic: removeMnemonicValue,
       })
-      .then(() => console.log("Removed Successfully!"));
-  };
+      .then(() => console.log('Removed Successfully!'))
+  }
 </script>
 
 <style>
@@ -112,6 +117,7 @@
 </style>
 
 <h4>Identities</h4>
+{#if !idLoaded}Loading identities...{/if}
 {#if ids && ids.length > 0}
   <ul>
     {#each $wallet.identities.list() as identity, i}
@@ -142,12 +148,14 @@
       -->
     {/each}
   </ul>
-{:else}No Identity. Create one!{/if}
+{:else}No Identity Saved.{/if}
+
+<!--
 
 <div class="vert">
   <Button
     on:click={() => {
-      $walletSection = 'PersonSetup';
+      $walletSection = 'PersonSetup'
     }}
     variant="outlined">
     <Icon class="material-icons">add_circle</Icon>
@@ -158,7 +166,7 @@
 <div class="vert">
   <Button
     on:click={() => {
-      $walletSection = 'PersonSetup';
+      $walletSection = 'PersonSetup'
     }}
     variant="outlined">
     <Icon class="material-icons">add_circle</Icon>
@@ -166,7 +174,6 @@
   </Button>
 </div>
 
-<!--
     <div class="option">
       <span>List</span>
       <button on:click={handleList}>List</button>

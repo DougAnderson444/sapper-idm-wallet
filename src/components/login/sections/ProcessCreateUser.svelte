@@ -12,6 +12,15 @@
 
   // [Done] Test that ipfs.name.reolve(doug.peerpiper.io) works from another node, both go and JS
 
+  // For LogIn
+  // Two components: peerpiper shortcut name (server fetch)
+  // 2) Local wallet = pristine or not.
+  // if pristine, fetch remote and decrypt
+  // if not pristine, load it up (how to handle multiple wallets per device? by passphrase?)
+  // what if passphrase mismatches username?
+
+  // need to createWallet in order to find out if this passphrase unlocks it. but the lockers aren't named?
+
   // *** Super & Peers: Pin where the dnslink points + PeerPiper files...
 
   // Parking Lot
@@ -24,13 +33,13 @@
   // I can export the key encrypted under the user's password
 
   // svelte stuff
-  import { onMount } from "svelte";
-  import Spinner from "../../display/Spinner.svelte";
-  import createWallet from "streamlined-idm-wallet-sdk";
-  import createIPFS, { resolve } from "../../Ipfs.js";
-  import { Icon } from "@smui/common";
+  import { onMount } from 'svelte'
+  import Spinner from '../../display/Spinner.svelte'
+  import createWallet from 'streamlined-idm-wallet-sdk'
+  import createIPFS, { resolve } from '../../Ipfs.js'
+  import { Icon } from '@smui/common'
 
-  import { DEVICE_TYPES } from "streamlined-idm-wallet-sdk/src/identities/identity/utils/constants/devices";
+  import { DEVICE_TYPES } from 'streamlined-idm-wallet-sdk/src/identities/identity/utils/constants/devices'
 
   // svelte stores
   import {
@@ -44,61 +53,61 @@
     nodeId,
     deviceType,
     deviceName,
-    error
-  } from "../../stores.js";
+    error,
+  } from '../../stores.js'
 
-  let mounted;
-  const LOCK_TYPE = "passphrase";
+  let mounted
+  const LOCK_TYPE = 'passphrase'
 
   onMount(async () => {
-    mounted = true;
-    console.log(`1. Process create user request`);
-    let userCreated = await createNewUser();
-    console.log(`5. userCreated: ${userCreated}`);
+    mounted = true
+    console.log(`1. Process create user request`)
+    let userCreated = await createNewUser()
+    console.log(`5. userCreated: ${userCreated}`)
 
     if (userCreated) {
-      //initIPFS();
+      initIPFS()
     } else {
-      console.log(`User ${$username} already exists`);
-      $appSection = "CreateNewUser";
+      console.log(`User ${$username} already exists`)
+      $appSection = 'CreateNewUser'
     }
-  });
+  })
 
   async function createNewUser() {
     let url = encodeURI(
-      `/api/createUser?username=${$username}&password=${$password}`
-    );
+      `/api/createUser?username=${$username.toLowerCase()}&password=${$password}`,
+    )
 
-    const res = await fetch(url);
+    const res = await fetch(url)
 
-    if (!res.ok) return false;
+    if (!res.ok) return false
 
-    let response = await res.json();
-    console.log(`3. Response ${JSON.stringify(response, null, 2)}`);
+    let response = await res.json()
+    console.log(`3. Response ${JSON.stringify(response, null, 2)}`)
 
     // if exists: {"error":"conflict","reason":"Document update conflict."}
     if (response.error) {
       // set error to username already exists and return to createNewUser
-      $error = "That username already exists. Pick another one?";
-      console.log(`4. Username ${$username} already exists`);
+      $error = 'That username already exists. Pick another one?'
+      console.log(`4. Username ${$username} already exists`)
       // stop this script
-      return false;
+      return false
     }
-    console.log(`4. Username ${$username} created`);
-    return true;
+    console.log(`4. Username ${$username} created`)
+    return true
   }
 
   async function initIPFS() {
-    $ipfsNode = await createIPFS($username);
+    $ipfsNode = await createIPFS($username)
   }
 
   // make sure IPFS is online before using it
   $: {
-    if (typeof $ipfsNode.isOnline === "function") {
+    if (typeof $ipfsNode.isOnline === 'function') {
       if ($ipfsNode.isOnline()) {
-        getPem();
+        getPem()
       } else {
-        console.log("ipfsNode is NOT Online");
+        console.log('ipfsNode is NOT Online')
       }
     }
   }
@@ -106,17 +115,17 @@
   async function getPem() {
     //export password protected pem
     // ipfs.key.export(name, password, [options])
-    $pemEncrypted = await $ipfsNode.key.export("self", $password);
+    $pemEncrypted = await $ipfsNode.key.export('self', $password)
   }
 
   // when pemEncrypted changes (ie. gets set to non-zero), that means IPFS is ready, so generate the wallet
   $: if ($pemEncrypted)
     (async () => {
-      $wallet = await createWallet({ ipfs: $ipfsNode });
-      console.log("Creating ID and DID Doc.");
-      setLock(LOCK_TYPE, $password);
-      handleCreate(() => ($appSection = "WalletContent"));
-    })();
+      $wallet = await createWallet({ ipfs: $ipfsNode })
+      console.log('Creating ID and DID Doc.')
+      setLock(LOCK_TYPE, $password)
+      handleCreate(() => {})
+    })()
 
   const setLock = (lockType, solution) => {
     //loading = true;
@@ -125,72 +134,87 @@
     $wallet.locker
       .getLock(lockType)
       .enable(solution)
-      .catch(err => {
-        loading = false;
-        error = err;
-      });
-  };
+      .catch((err) => {
+        loading = false
+        error = err
+      })
+  }
 
-  const handleCreate = cb => {
+  const handleCreate = (cb) => {
     $wallet.identities
-      .create("ipid", {
+      .create('ipid', {
         profileDetails: {
-          "@context": "https://schema.org",
-          "@type": "Person",
-          name: $username
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: $username,
         },
         deviceInfo: {
           type: $deviceType,
-          name: $deviceName
-        }
+          name: $deviceName,
+        },
       })
-      .then(identity => {
-        console.log("Serialized:", {
+      .then((identity) => {
+        console.log('Serialized:', {
           addedAt: identity.getAddedAt(),
           id: identity.getId(),
           did: identity.getDid(),
           devices: identity.devices.list(),
           backup: identity.backup.getData(),
-          profile: identity.profile.getDetails()
-        });
+          profile: identity.profile.getDetails(),
+        })
+        // encrypt and save mneumic for cloud-like functionality
+        // encrypt with password
+        // save to localstorage
+        var backupData = identity.backup.getData()
+        if (
+          typeof window !== 'undefined' &&
+          $username != '' &&
+          backupData.mnemonic != 0
+        ) {
+          // ecrypt TODO
+          localStorage.setItem(`backup-${$username}`, backupData.mnemonic)
+          localStorage.setItem(`deviceType-${$username}`, $deviceType)
+          localStorage.setItem(`deviceName-${$username}`, $deviceName)
+        }
 
-        (async () => {
-          const match = identity.getDid().match(/did:(\w+):(\w+).*/);
-          const ipnsHash = match[2];
-          console.log(`ipnsHash is ${ipnsHash}`);
+        ;(async () => {
+          const match = identity.getDid().match(/did:(\w+):(\w+).*/)
+          const ipnsHash = match[2]
+          console.log(`ipnsHash is ${ipnsHash}`)
 
           try {
-            $rootHash = await resolve($ipfsNode, ipnsHash);
+            $rootHash = await resolve($ipfsNode, ipnsHash)
             const dnsConfirmationCode = await fetch(
-              `/api/dns?hash=${ipnsHash}&subdomain=${$username}`
-            );
+              `/api/dns?hash=${ipnsHash}&subdomain=${$username}`,
+            )
+            const code = await dnsConfirmationCode.text()
             console.log(
-              `DNSuccess Confirmation Code: ${JSON.stringify(
-                dnsConfirmationCode,
-                null,
-                2
-              )}`
-            );
+              `DNSuccess Confirmation Code: ${JSON.stringify(code, null, 2)}`,
+            )
           } catch (err) {
-            console.log(`Error in process: \n ${err}`);
+            console.log(`Error in process: \n ${err}`)
           }
 
           //try it out
           try {
             const verified = await resolve(
               $ipfsNode,
-              `${$username}.peerpiper.io`
-            );
+              `${$username}.peerpiper.io`,
+            )
           } catch (err) {
-            console.log(`Error in process: \n ${err}`);
+            console.log(`Error in resolving ${$username}.peerpiper.io:\n > ${err}`)
           }
-        })();
+        })()
+
+        $appSection = 'WalletContent'
       })
-      .catch(err => {
-        console.log(`PersonSetup err ${err}`);
+      .catch((err) => {
+        $error = `Wallet Setup Error: ${err}`
+        console.log(`PersonSetup err ${err}`)
+        $appSection = 'LogInOrCreateChoice'
       })
-      .finally(cb);
-  };
+      .finally(cb)
+  }
 </script>
 
 <style>

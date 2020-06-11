@@ -79,7 +79,7 @@
       */
 
       // redirect to CreateNewUser
-      $appSection = "CreateNewUser";
+      $appSection = "ProcessLogin";
     }
   };
 </script>
@@ -143,6 +143,12 @@
       </div>
 
       <div>
+        <Button
+          on:click={() => ($appSection = 'LogInOrCreateChoice')}
+          variant="outlined">
+          <Icon class="material-icons">backspace</Icon>
+          <Label>Cancel</Label>
+        </Button>
         <Button variant="raised" on:click={handleSubmit}>
           <Label>Next</Label>
         </Button>

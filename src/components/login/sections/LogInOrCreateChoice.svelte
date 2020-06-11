@@ -6,7 +6,8 @@
   import FormField from "@smui/form-field";
   import Checkbox from "@smui/checkbox";
   import { PasswordError } from "../errors";
-
+  import { onMount } from 'svelte'
+  
   // Svelte Material UI
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
@@ -23,7 +24,13 @@
   let checkedTerms;
 
   const LOCK_TYPE = "passphrase";
-
+  
+  let mounted
+  
+  onMount(async () => {
+    mounted = true
+    
+  })
   async function validate(passphrase) {
     const result = checkPassphraseStrength(passphrase);
     if (result.score < 0.5) {
@@ -77,7 +84,7 @@
   }
 </style>
 
-{#if loading}
+{#if !mounted}
   <div>...Loading...</div>
 {/if}
 
@@ -85,7 +92,7 @@
   <div>{error.message}</div>
 {/if}
 
-{#if !loading && !error}
+{#if mounted && !error}
   <div>
     <h3>Log in or create a new account.</h3>
     <Button on:click={() => ($appSection = 'LogIn')} variant="raised">

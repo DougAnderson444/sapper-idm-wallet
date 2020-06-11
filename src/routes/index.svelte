@@ -1,6 +1,15 @@
 <script>
   import Button, { Label } from "@smui/button";
   import { Icon } from "@smui/common";
+  import Spinner from "../components/display/Spinner.svelte";
+
+  import { goto } from "@sapper/app";
+
+  const navigateAndSave = async () => {
+    waiting = true;
+    await goto("/app");
+  };
+  let waiting;
 </script>
 
 <style>
@@ -113,60 +122,73 @@
       class="logo"
       src="p-150x150.png" />
   </center>
-  <h1 class="title">PeerPiper.io</h1>
-  <p class="description">
-    Your ultimate personal data sink. Save once, pipe out to your selected peer
-    groups.
-  </p>
+</div>
+<h1 class="title">PeerPiper.io</h1>
+<p class="description">
+  Your ultimate personal data sink. Save once, pipe out to your selected peer
+  groups.
+</p>
 
-  <p>
-    Your place to manage your own digital footprint, that doesn't depend on
-    Facebook or Google -- just your electricty and internet connection. 100%
-    Owned and stored by you.
-  </p>
-  <p>Try it out!</p>
+<p>
+  Your place to manage your own digital footprint, that doesn't depend on
+  Facebook or Google -- just your electricty and internet connection. 100% Owned
+  and stored by you.
+</p>
+<p>Try it out!</p>
 
-  <!-- on:click={async() => (await goto('/app'))}  -->
-  <center>
-    <div class="vert">
-      <Button rel=prefetch href="app" variant="raised">
+<!-- on:click={async() => (await goto('/app'))}    rel=prefetch  -->
+<center>
+  <div class="vert">
+    {#if !waiting}
+      <Button
+        href="app"
+        rel="prefetch"
+        on:click={navigateAndSave}
+        variant="raised">
         <Icon class="material-icons">launch</Icon>
         <Label>LAUNCH PEERPIPER</Label>
         <Icon class="material-icons">launch</Icon>
       </Button>
-    </div>
+    {:else}
+      <center>
+        <span>
+          <center>
+            <Spinner size="small" />
+          </center>
+        </span>
+      </center>
+    {/if}
+  </div>
+</center>
 
-  </center>
-  <div class="row">
-    <div class="col">
-      <a
-        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
-        target="_blank"
-        class="card">
-        <h3>PeerPiper Portfolio &rarr;</h3>
-        <p>
-          Verify all your resume experience, skills, personality, anything
-          really.
-        </p>
-      </a>
-    </div>
-    <div class="col">
-      <a
-        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
-        target="_blank"
-        class="card">
-        <h3>PeerPiper Pad &rarr;</h3>
-        <p>Stream out your address, never miss mail again.</p>
-      </a>
-    </div>
-    <div class="col">
-      <a
-        href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
-        target="_blank"
-        class="card">
-        <h3>PeerPiper Pulse &rarr;</h3>
-        <p>Stream out your availability, never miss a meeting again.</p>
-      </a>
-    </div>
+<div class="row">
+  <div class="col">
+    <a
+      href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
+      target="_blank"
+      class="card">
+      <h3>PeerPiper Portfolio &rarr;</h3>
+      <p>
+        Verify all your resume experience, skills, personality, anything really.
+      </p>
+    </a>
+  </div>
+  <div class="col">
+    <a
+      href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
+      target="_blank"
+      class="card">
+      <h3>PeerPiper Pad &rarr;</h3>
+      <p>Stream out your address, never miss mail again.</p>
+    </a>
+  </div>
+  <div class="col">
+    <a
+      href="https://mailchi.mp/fa2bf49dfc8b/peerpiper"
+      target="_blank"
+      class="card">
+      <h3>PeerPiper Pulse &rarr;</h3>
+      <p>Stream out your availability, never miss a meeting again.</p>
+    </a>
   </div>
 </div>

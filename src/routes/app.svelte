@@ -6,14 +6,14 @@
   import Spinner from "../components/display/Spinner.svelte";
 
   //svelte stores
-  import { appSection, rootHash } from "../components/stores.js";
+  import { appSection, rootHash, wallet, username } from "../components/stores.js";
 
   let mounted, active, path;
 
   $appSection = "LogInOrCreateChoice";
   $: active = appSections[$appSection];
 
-  onMount(async() => {
+  onMount(async () => {
     mounted = true;
   });
 </script>
@@ -65,27 +65,29 @@
   and stored by you.
 </p>
 <p>Try it out!</p>
-{#if !mounted}
-  <center>
-    <Spinner />
-  </center>
-{/if}
 <div class="vert">
-<!--  {#if mounted || !mounted} -->
-    <div class="content">
-      <svelte:component this={active.component} />
-    </div>
-    <br />
-    {#if $rootHash}
-      <p>Your DID Doc is published here:</p>
-      <p>
-        <a
-          href="https://explore.ipld.io/#/explore/{$rootHash}"
-          target="_blank"
-          rel="noopener noreferrer">
-          {$rootHash}
-        </a>
-      </p>
-    {/if}
-<!-- {/if} -->
+  {#if !mounted}
+    <center>
+      <!--  <Spinner /> -->
+    </center>
+  {/if}
+</div>
+<div class="vert">
+  <!--  {#if mounted || !mounted} -->
+  <div class="content">
+    <svelte:component this={active.component} />
+  </div>
+  <br />
+  {#if $rootHash}
+    <p>Your DID Doc is published here:</p>
+    <p>
+      <a
+        href="https://explore.ipld.io/#/explore/{$rootHash}"
+        target="_blank"
+        rel="noopener noreferrer">
+        {$rootHash}
+      </a>
+    </p>
+  {/if}
+  <!-- {/if} -->
 </div>

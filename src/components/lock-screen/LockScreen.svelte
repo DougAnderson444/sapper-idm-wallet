@@ -1,40 +1,40 @@
 <script>
   //svelte stores
-  import { wallet } from "../stores.js";
+  import { wallet } from '../stores.js'
 
   // Svelte Material UI
-  import Textfield from "@smui/textfield";
-  import HelperText from "@smui/textfield/helper-text";
-  import { Label, Icon } from "@smui/common";
+  import Textfield from '@smui/textfield'
+  import HelperText from '@smui/textfield/helper-text'
+  import { Label, Icon } from '@smui/common'
 
-  import Warning from "../display/Warning.svelte";
-  
-  import Spinner from "../display/Spinner.svelte";
+  import Warning from '../display/Warning.svelte'
 
-  const LOCK_TYPE = "passphrase";
+  import Spinner from '../display/Spinner.svelte'
 
-  let loading = false;
-  let error = undefined;
-  let value = "";
+  const LOCK_TYPE = 'passphrase'
+
+  let loading = false
+  let error = undefined
+  let value = ''
 
   const unlock = (lockType, challenge) => {
-    loading = true;
+    loading = true
 
     $wallet.locker
       .getLock(lockType)
       .unlock(challenge)
-      .catch(err => {
-        loading = false;
-        console.log(`unlock err: ${err}`);
-        error = err;
-      });
-  };
+      .catch((err) => {
+        loading = false
+        console.log(`unlock err: ${err}`)
+        error = err
+      })
+  }
 
-  const handleInputKeyPress = event => {
+  const handleInputKeyPress = (event) => {
     if (event.charCode === 13) {
-      unlock(LOCK_TYPE, value);
+      unlock(LOCK_TYPE, value)
     }
-  };
+  }
 </script>
 
 <style>
@@ -45,26 +45,24 @@
 </style>
 
 <div class="contain">
+  <div>
+    <h1>Unlock your account</h1>
+    <Textfield
+      bind:value
+      type="password"
+      variant="outlined"
+      label="Passphrase"
+      input$aria-controls="super-helper"
+      input$aria-describedby="super-helper"
+      on:keypress={handleInputKeyPress} />
+    <HelperText id="super-helper">Enter your passphrase to unlock</HelperText>
+
+    <Warning show={error}>
+      <span slot="phrase">⛔️ {error.message} ⛔️</span>
+    </Warning>
+
+  </div>
   {#if loading}
     <Spinner />
-  {:else}
-    <div>
-      <h1>Unlock your account</h1>
-
-      <Textfield
-        bind:value
-        type="password"
-        variant="outlined"
-        label="Passphrase"
-        input$aria-controls="super-helper"
-        input$aria-describedby="super-helper"
-        on:keypress={handleInputKeyPress} />
-      <HelperText id="super-helper">Enter your passphrase to unlock</HelperText>
-
-      <Warning show={error}>
-        <span slot="phrase">⛔️ {error.message} ⛔️</span>
-      </Warning>
-
-    </div>
   {/if}
 </div>

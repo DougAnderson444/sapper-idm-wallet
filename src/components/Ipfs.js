@@ -42,7 +42,7 @@ export function resolve(node, target){
       let hash
       for await (const name of node.name.resolve(target)) {
         hash = name.replace(/^\/ipfs\//, "");
-        console.log(`resolves to 
+        console.log(`${target} \nresolves to
           https://explore.ipld.io/#/explore/${hash}`
         );
       }
