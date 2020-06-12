@@ -14,6 +14,7 @@ export const pemEncrypted = writable(0);
 export const deviceName = writable(0);
 export const deviceType = writable(0);
 export const error = writable(0);
+export const dnsSuccess = writable(0);
 
 export const wallet = writable(0);
 

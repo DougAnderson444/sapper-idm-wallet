@@ -58,10 +58,10 @@
         $wallet.locker
           .getLock(LOCK_TYPE)
           .enable($password)
-          .then($wallet.locker.getLock(LOCK_TYPE).unlock($password))
           .catch((err) => {
             $error = err
           })
+        $wallet.locker.getLock(LOCK_TYPE).unlock($password)
         $wallet.identities.load().then(() => {
           console.log('ProcessLogin loaded Identities')
           $wallet = $wallet
@@ -93,7 +93,7 @@
   }
 </style>
 
-Creating account:
+Loading account:
 <br />
 
 {#if !$ipfsNode}

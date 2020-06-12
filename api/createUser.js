@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
     roles: [],
     password: req.query.password,
   };
-
+  console.log("url is", purl);
   console.log(`/api/createUser data is: \n ` + JSON.stringify(data, null, 2));
   const resp = await postData("PUT", purl, data);
   console.log(`/api/createUser resp is: \n ` + JSON.stringify(resp, null, 2));

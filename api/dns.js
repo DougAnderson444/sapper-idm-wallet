@@ -5,7 +5,7 @@ module.exports = async (req, res) => {
   // remove old TXT record first
   
 
-  const dnslinkurl = `dnslink=/ipfs/${req.query.hash}`;
+  const dnslinkurl = `dnslink=/ipns/${req.query.hash}`;
 
   let dataObj = {
     name: req.query.subdomain, //"_dnslink",  //subdomain

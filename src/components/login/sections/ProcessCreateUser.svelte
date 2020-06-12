@@ -36,7 +36,8 @@
   import { onMount } from 'svelte'
   import Spinner from '../../display/Spinner.svelte'
   import createWallet from 'streamlined-idm-wallet-sdk'
-  import createIPFS, { resolve } from '../../Ipfs.js'
+  import createIPFS, { resolve, getCIDFromDNSName } from '../../Ipfs.js'
+  import IPFS from 'ipfs'
   import { Icon } from '@smui/common'
 
   import { DEVICE_TYPES } from 'streamlined-idm-wallet-sdk/src/identities/identity/utils/constants/devices'
@@ -54,6 +55,7 @@
     deviceType,
     deviceName,
     error,
+    dnsSuccess
   } from '../../stores.js'
 
   let mounted
@@ -153,7 +155,7 @@
           name: $deviceName,
         },
       })
-      .then((identity) => {
+      .then(async (identity) => {
         console.log('Serialized:', {
           addedAt: identity.getAddedAt(),
           id: identity.getId(),
@@ -162,20 +164,14 @@
           backup: identity.backup.getData(),
           profile: identity.profile.getDetails(),
         })
-        // encrypt and save mneumic for cloud-like functionality
-        // encrypt with password
-        // save to localstorage
+        // encrypt the pem
         var backupData = identity.backup.getData()
-        if (
-          typeof window !== 'undefined' &&
-          $username != '' &&
-          backupData.mnemonic != 0
-        ) {
-          // ecrypt TODO
-          localStorage.setItem(`backup-${$username}`, backupData.mnemonic)
-          localStorage.setItem(`deviceType-${$username}`, $deviceType)
-          localStorage.setItem(`deviceName-${$username}`, $deviceName)
-        }
+        var privKeyRaw = await IPFS.crypto.keys.import(backupData.privateKey)
+        var pemEncrypted = await privKeyRaw.export($password)
+        // save mneumic to IPFS for cloud-like functionality
+        // point to it with DID Doc as recovery service
+        // load from IPFS if no identity loaded locally
+        // $ipfsNode.
 
         ;(async () => {
           const match = identity.getDid().match(/did:(\w+):(\w+).*/)
@@ -184,25 +180,17 @@
 
           try {
             $rootHash = await resolve($ipfsNode, ipnsHash)
+            // add DNS record
             const dnsConfirmationCode = await fetch(
-              `/api/dns?hash=${ipnsHash}&subdomain=${$username}`,
+              `/api/dns?subdomain=${$username}&hash=${ipnsHash}`,
             )
             const code = await dnsConfirmationCode.text()
             console.log(
-              `DNSuccess Confirmation Code: ${JSON.stringify(code, null, 2)}`,
+              `DNSuccess Confirmation Code: ${JSON.stringify(code, null, 2)} ${new Date(Date.now())}`,
             )
+            $dnsSuccess = true
           } catch (err) {
             console.log(`Error in process: \n ${err}`)
-          }
-
-          //try it out
-          try {
-            const verified = await resolve(
-              $ipfsNode,
-              `${$username}.peerpiper.io`,
-            )
-          } catch (err) {
-            console.log(`Error in resolving ${$username}.peerpiper.io:\n > ${err}`)
           }
         })()
 

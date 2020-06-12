@@ -1,14 +1,51 @@
 <script>
   //svelte stores
-  import { wallet, walletSection } from '../../../stores.js'
+  import {
+    wallet,
+    walletSection,
+    username,
+    rootHash,
+    ipfsNode,
+    dnsSuccess,
+  } from '../../../stores.js'
   import Button, { Label, Icon } from '@smui/button'
+  import createIPFS, { resolve, getCIDFromDNSName } from '../../../Ipfs.js'
+  // svelte stuff
+  import { onMount } from 'svelte'
 
-  let importValue, peekValue, removeIdValue, removeMnemonicValue, ids, idLoaded
+  let importValue,
+    peekValue,
+    removeIdValue,
+    removeMnemonicValue,
+    ids,
+    idLoaded,
+    mounted
+
+  onMount(async () => {
+    mounted = true
+  })
+  $: {
+    if (mounted && $dnsSuccess) {
+      console.log(`dnsSuccess ` + new Date(Date.now()))
+      setTimeout(getDNS, 500) // 5 sec too short. 15s?
+     }
+  }
+
+  const getDNS = async () => {
+    console.log(`getDNS ` + new Date(Date.now()))
+    try {
+      let r = await getCIDFromDNSName($ipfsNode, `${$username}.peerpiper.io`)
+      console.log(`(IDs.svelte) ${$username}.peerpiper.io resolves to ${r}`)
+      if (r) $rootHash = r
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   $: {
     idLoaded = $wallet.identities.isLoaded()
-    console.log(`Identities loaded in ID.svelte`)
-    }
+    //console.log(`Identities loaded in ID.svelte`)
+  }
 
   $: if (idLoaded) {
     try {
@@ -22,6 +59,8 @@
         backup: identity.backup.getData(),
         profile: identity.profile.getDetails(),
       }))
+      var ipnsHash = ids[0].did.replace('did:ipid:', '')
+      console.log(`did ${ipnsHash}`)
     } catch (err) {
       console.error(`ids error`, err)
     }
@@ -116,12 +155,23 @@
   }
 </style>
 
-<h4>Identities</h4>
+<h3>{$username} Digital Identities</h3>
 {#if !idLoaded}Loading identities...{/if}
 {#if ids && ids.length > 0}
+  Share your ID with others: {$username}.peerpiper.io
   <ul>
     {#each $wallet.identities.list() as identity, i}
-      {i + 1}. {identity.getDid()}
+      {i + 1}.
+      {#if $rootHash}
+        {#await $rootHash then $rootHash}
+          <a
+            href="https://explore.ipld.io/#/explore/{$rootHash}"
+            target="_blank"
+            rel="noopener noreferrer">
+            {identity.getDid()}
+          </a>
+        {/await}
+      {:else}{identity.getDid()}{/if}
       <br />
       added on: {new Date(identity.getAddedAt())}
       <ul>devices:</ul>
@@ -136,8 +186,20 @@
         -->
         <br />
       {/each}
+      {#each [...Object.entries(identity.profile.getDetails()).sort()] as [key, val]}
+        {#if key == '@type'}
+          <p>{key}: {val}</p>
+        {/if}
+      {/each}
+
       {#each [...Object.entries(identity.backup.getData()).sort()] as [key, val]}
-        {#if key == 'mnemonic'}
+        {#if key != ''}
+          <p>{key}: {val}</p>
+        {/if}
+      {/each}
+
+      {#each [...Object.entries(identity.profile.getDetails()).sort()] as [key, val]}
+        {#if key != ''}
           <p>{key}: {val}</p>
         {/if}
       {/each}
@@ -148,7 +210,12 @@
       -->
     {/each}
   </ul>
-{:else}No Identity Saved.{/if}
+{:else}
+  No Identity Saved.
+  <br />
+  If you cleared your browser, you'll need to import your ID from your backup
+  card.
+{/if}
 
 <!--
 

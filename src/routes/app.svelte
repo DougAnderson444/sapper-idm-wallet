@@ -1,21 +1,26 @@
 <script>
   // svelte stuff
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte'
 
-  import { appSections } from "../components/login/sections";
-  import Spinner from "../components/display/Spinner.svelte";
+  import { appSections } from '../components/login/sections'
+  import Spinner from '../components/display/Spinner.svelte'
 
   //svelte stores
-  import { appSection, rootHash, wallet, username } from "../components/stores.js";
+  import {
+    appSection,
+    rootHash,
+    wallet,
+    username,
+  } from '../components/stores.js'
 
-  let mounted, active, path;
+  let mounted, active, path
 
-  $appSection = "LogInOrCreateChoice";
-  $: active = appSections[$appSection];
+  $appSection = 'LogInOrCreateChoice'
+  $: active = appSections[$appSection]
 
   onMount(async () => {
-    mounted = true;
-  });
+    mounted = true
+  })
 </script>
 
 <style>
@@ -79,15 +84,17 @@
   </div>
   <br />
   {#if $rootHash}
-    <p>Your DID Doc is published here:</p>
-    <p>
-      <a
-        href="https://explore.ipld.io/#/explore/{$rootHash}"
-        target="_blank"
-        rel="noopener noreferrer">
-        {$rootHash}
-      </a>
-    </p>
+    {#await $rootHash then $rootHash}
+      <p>Your DID Doc is published here:</p>
+      <p>
+        <a
+          href="https://explore.ipld.io/#/explore/{$rootHash}"
+          target="_blank"
+          rel="noopener noreferrer">
+          {$rootHash}
+        </a>
+      </p>
+    {/await}
   {/if}
   <!-- {/if} -->
 </div>

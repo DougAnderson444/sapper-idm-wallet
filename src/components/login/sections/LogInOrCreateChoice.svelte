@@ -7,7 +7,8 @@
   import Checkbox from "@smui/checkbox";
   import { PasswordError } from "../errors";
   import { onMount } from 'svelte'
-  
+  import Spinner from "../../display/Spinner.svelte";
+
   // Svelte Material UI
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
@@ -85,7 +86,10 @@
 </style>
 
 {#if !mounted}
-  <div>...Loading...</div>
+  <div>
+  <Spinner /> 
+  <br/>
+  ...Loading App...</div>
 {/if}
 
 {#if error}

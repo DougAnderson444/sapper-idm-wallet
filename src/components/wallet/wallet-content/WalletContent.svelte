@@ -18,7 +18,7 @@
   import { onMount } from 'svelte'
 
   //svelte stores
-  import { wallet, walletSection } from '../../stores.js'
+  import { wallet, walletSection, ipfsNode } from '../../stores.js'
   $walletSection = 'Identities' //init
 
   let open, menu, active, clicked
@@ -104,5 +104,5 @@
   </div>
 -->
   <Timer />
-
+{(typeof $ipfsNode.isOnline === 'function') && $ipfsNode.isOnline() ? "IPFS Online" : "IPFS Offline"}
 </div>
