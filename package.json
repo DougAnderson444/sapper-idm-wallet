@@ -22,7 +22,7 @@
     "prom-client": "^12.0.0",
     "sapper-environment": "^1.0.1",
     "sirv": "^0.4.0",
-    "streamlined-idm-wallet-sdk": "git://github.com/DougAnderson444/streamlined-idm-wallet-sdk.git"
+    "streamlined-idm-wallet-sdk": "git://github.com/DougAnderson444/streamlined-idm-wallet-sdk.git#73f4a4044cf952fed02854b1342221f2252c6aee"
   },
   "devDependencies": {
     "css-loader": "^3.5.3",

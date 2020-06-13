@@ -55,7 +55,7 @@
     deviceType,
     deviceName,
     error,
-    dnsSuccess
+    dnsSuccess,
   } from '../../stores.js'
 
   let mounted
@@ -107,42 +107,25 @@
   $: {
     if (typeof $ipfsNode.isOnline === 'function') {
       if ($ipfsNode.isOnline()) {
-        getPem()
+        continueCreate()
       } else {
         console.log('ipfsNode is NOT Online')
       }
     }
   }
 
-  async function getPem() {
-    //export password protected pem
-    // ipfs.key.export(name, password, [options])
-    $pemEncrypted = await $ipfsNode.key.export('self', $password)
-  }
-
-  // when pemEncrypted changes (ie. gets set to non-zero), that means IPFS is ready, so generate the wallet
-  $: if ($pemEncrypted)
-    (async () => {
-      $wallet = await createWallet({ ipfs: $ipfsNode })
-      console.log('Creating ID and DID Doc.')
-      setLock(LOCK_TYPE, $password)
-      handleCreate(() => {})
-    })()
-
-  const setLock = (lockType, solution) => {
-    //loading = true;
-    //.then(onComplete)
+  const continueCreate = async () => {
+    $wallet = await createWallet({ ipfs: $ipfsNode })
+    console.log('Creating ID and DID Doc.')
 
     $wallet.locker
-      .getLock(lockType)
-      .enable(solution)
+      .getLock(LOCK_TYPE)
+      .enable($password)
       .catch((err) => {
         loading = false
         error = err
       })
-  }
 
-  const handleCreate = (cb) => {
     $wallet.identities
       .create('ipid', {
         profileDetails: {
@@ -173,26 +156,40 @@
         // load from IPFS if no identity loaded locally
         // $ipfsNode.
 
-        ;(async () => {
-          const match = identity.getDid().match(/did:(\w+):(\w+).*/)
-          const ipnsHash = match[2]
-          console.log(`ipnsHash is ${ipnsHash}`)
+        const match = identity.getDid().match(/did:(\w+):(\w+).*/)
+        const ipnsHash = match[2]
+        console.log(`ipnsHash is ${ipnsHash}`)
 
-          try {
-            $rootHash = await resolve($ipfsNode, ipnsHash)
-            // add DNS record
-            const dnsConfirmationCode = await fetch(
-              `/api/dns?subdomain=${$username}&hash=${ipnsHash}`,
-            )
-            const code = await dnsConfirmationCode.text()
-            console.log(
-              `DNSuccess Confirmation Code: ${JSON.stringify(code, null, 2)} ${new Date(Date.now())}`,
-            )
-            $dnsSuccess = true
-          } catch (err) {
-            console.log(`Error in process: \n ${err}`)
+        try {
+          $rootHash = await resolve($ipfsNode, ipnsHash)
+          // add DNS record
+          const dnsConfirmationCode = await fetch(
+            `/api/dns?subdomain=${$username}&hash=${ipnsHash}`,
+          )
+          const code = await dnsConfirmationCode.text()
+          console.log(
+            `DNSuccess Confirmation Code: ${JSON.stringify(
+              code,
+              null,
+              2,
+            )} ${new Date(Date.now())}`,
+          )
+          $dnsSuccess = true
+        } catch (err) {
+          console.log(`Error in process: \n ${err}`)
+        }
+
+        // add Data Service to DID
+        const did = identity.getDid()
+        await $wallet.identities.addService(
+          'ipid',
+          { privateKey: backupData.privateKey },
+          {
+            id: `${did}#data`,
+            type: 'DataHub',
+            serviceEndpoint: `https://${$username}.peerpiper.io`,
           }
-        })()
+        )
 
         $appSection = 'WalletContent'
       })
@@ -201,7 +198,6 @@
         console.log(`PersonSetup err ${err}`)
         $appSection = 'LogInOrCreateChoice'
       })
-      .finally(cb)
   }
 </script>
 
